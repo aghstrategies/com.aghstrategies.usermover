@@ -4,14 +4,19 @@ require_once 'usermover.civix.php';
 use CRM_Usermover_ExtensionUtil as E;
 
 function usermover_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$values) {
-  if ($op == 'contact.custom.actions' && $objectName == 'Contact') {
-    $links[] = array(
-      'name' => ts('Move User'),
-      'url' => 'mymodule/civicrm/actions/%%myObjId%%',
-      'title' => 'Reassign CMS User',
-      'qs' => 'reset=1&tid=%%thingId%%',
-      'class' => 'no-popup',
-    );
+  if ($objectName == 'Contact') {
+    if ($op == 'contact.custom.actions' || $op == 'view.contact.activity') {
+      $ufMatch = CRM_Usermover_Form_UserMover::apiShortCut('UFMatch', 'getsingle', ['contact_id' => $objectId]);
+      if (!empty($ufMatch['uf_id'])) {
+        $url = CRM_Utils_System::url('civicrm/usermover', "reset=1&ufid={$ufMatch['uf_id']}&cid={$objectId}");
+        $links[] = array(
+          'name' => ts('Move User'),
+          'url' => $url,
+          'title' => 'Reassign CMS User',
+          'class' => 'no-popup',
+        );
+      }
+    }
   }
 }
 

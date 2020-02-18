@@ -170,7 +170,8 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
    * @param array $row modifiable SQL result row
    * @return void
    */
-  // function alterRow(&$row) {
-  //   $row['sort_name'] .= ' ( altered )';
-  // }
+  function alterRow(&$row) {
+    $href = CRM_Core_Config::singleton()->userSystem->getUserRecordUrl($row['contact_id']);
+    $row['user_id'] = "<a href=$href>{$row['user_id']}</a>";
+  }
 }

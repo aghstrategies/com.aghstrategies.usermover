@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/usermover</path>
+    <page_callback>CRM_Usermover_Form_UserMover</page_callback>
+    <title>User Mover</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>
