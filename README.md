@@ -1,44 +1,25 @@
 # com.aghstrategies.usermover
 
-![Screenshot](/images/screenshot.png)
+This extension creates a User Interface for reassigning CMS Users to different Contacts in CiviCRM.
 
-(*FIXME: In one or two paragraphs, describe what the extension does and why one would download it. *)
+## Features:
 
-The extension is licensed under [AGPL-3.0](LICENSE.txt).
+### Search For CMS Users
 
-## Requirements
+The "Search For CMS Users" allows administrators to search for Contacts by CMS User Id, Primary Email or Contact Name.
 
-* PHP v7.0+
-* CiviCRM (*FIXME: Version number*)
+It can be found by going to the CiviCRM Admin Menu -> Search -> Custom Searches -> Usermover (com.aghstrategies.usermover)
 
-## Installation (Web UI)
+![Search For CMS Users Screenshot](/images/search.png)
 
-This extension has not yet been published for installation via the web UI.
+### Move User Action
 
-## Installation (CLI, Zip)
+This extension adds a "Move User" link to each row in the "Search For CMS Users" results AND to the Actions Dropdown on Contact's Summaries for contacts that are connected to a CMS User.
 
-Sysadmins and developers may download the `.zip` file for this extension and
-install it with the command-line tool [cv](https://github.com/civicrm/cv).
+![Move User Action Screenshot](/images/MoveUser.png)
 
-```bash
-cd <extension-dir>
-cv dl com.aghstrategies.usermover@https://github.com/FIXME/com.aghstrategies.usermover/archive/master.zip
-```
+Clicking the "Move User" action takes you to the "User Mover" form where you can select a CiviCRM Contact and a User ID to connect the contact to.
 
-## Installation (CLI, Git)
+![User Mover Form](/images/userMover.png)
 
-Sysadmins and developers may clone the [Git](https://en.wikipedia.org/wiki/Git) repo for this extension and
-install it with the command-line tool [cv](https://github.com/civicrm/cv).
-
-```bash
-git clone https://github.com/FIXME/com.aghstrategies.usermover.git
-cv en usermover
-```
-
-## Usage
-
-(* FIXME: Where would a new user navigate to get started? What changes would they see? *)
-
-## Known Issues
-
-(* FIXME *)
+On Submit of the form you will recieve a success message if everything went as expected and an error message if it did not.
