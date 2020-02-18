@@ -23,3 +23,8 @@ Clicking the "Move User" action takes you to the "User Mover" form where you can
 ![User Mover Form](/images/userMover.png)
 
 On Submit of the form you will recieve a success message if everything went as expected and an error message if it did not.
+
+
+## TODOS:
+1. Increase security make sure only admin users can move users
+2. Add help text to let user know more about the consequences of their actions
