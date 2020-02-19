@@ -28,3 +28,10 @@ On Submit of the form you will recieve a success message if everything went as e
 ## TODOS:
 1. Increase security make sure only admin users can move users
 2. Add help text to let user know more about the consequences of their actions
+3. Add validation if you are overwritting a record
+4. Add validation if you are going to create a double link
+5. Add search by CMS name and column for CMS name
+6. Add search by any email
+7. fix search to actually filter by user id etc.
+8. Add ability to delete connection
+9. Add link to user land
