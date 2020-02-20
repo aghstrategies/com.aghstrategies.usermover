@@ -8,9 +8,9 @@ function usermover_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &
     if ($op == 'contact.custom.actions' || $op == 'view.contact.activity') {
       $ufMatch = CRM_Usermover_Form_UserMover::apiShortCut('UFMatch', 'getsingle', ['contact_id' => $objectId]);
       if (!empty($ufMatch['uf_id'])) {
-        $url = CRM_Utils_System::url('civicrm/usermover', "reset=1&ufid={$ufMatch['uf_id']}&cid={$objectId}");
+        $url = CRM_Utils_System::url('civicrm/usermover', "reset=1&ufid={$ufMatch['uf_id']}&cid={$objectId}&ufname={$ufMatch['uf_name']}&id={$ufMatch['id']}");
         $links[] = array(
-          'name' => ts('Move User'),
+          'name' => ts('Reassign CMS User'),
           'url' => $url,
           'title' => 'Reassign CMS User',
           'class' => 'no-popup',

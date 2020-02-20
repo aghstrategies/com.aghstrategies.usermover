@@ -92,7 +92,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
    */
   function all($offset = 0, $rowcount = 0, $sort = NULL, $includeContactIDs = FALSE, $justIDs = FALSE) {
     // delegate to $this->sql(), $this->select(), $this->from(), $this->where(), etc.
-    return $this->sql($this->select(), $offset, $rowcount, $sort, $includeContactIDs, NULL);
+    return $this->sql($this->select(), $offset, $rowcount, $sort, $includeContactIDs, 'GROUP BY contact_a.id');
   }
 
   /**
@@ -102,10 +102,10 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
    */
   function select() {
     return "
-      contact_a.id           as contact_id,
-      civicrm_email.email    as email,
-      contact_a.sort_name    as sort_name,
-      civicrm_uf_match.uf_id as user_id
+      contact_a.id                      as contact_id,
+      GROUP_CONCAT(civicrm_email.email) as email,
+      contact_a.sort_name               as sort_name,
+      civicrm_uf_match.uf_id            as user_id
     ";
   }
 
@@ -118,7 +118,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
     return "
       FROM civicrm_contact contact_a
       LEFT JOIN civicrm_email
-        ON ( civicrm_email.contact_id = contact_a.id AND civicrm_email.is_primary = 1 )
+        ON civicrm_email.contact_id = contact_a.id
       LEFT JOIN civicrm_uf_match
         ON civicrm_uf_match.contact_id = contact_a.id
     ";
@@ -132,26 +132,41 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
    */
   function where($includeContactIDs = FALSE) {
     $params = array();
-    $where = "contact_a.id IS NOT NULL AND civicrm_uf_match.uf_id";
+    $where = "contact_a.id IS NOT NULL AND civicrm_uf_match.uf_id IS NOT NULL";
 
-    $count  = 1;
     $clause = array();
-    $name   = CRM_Utils_Array::value('contact_name',
-      $this->_formValues
-    );
-    if ($name != NULL) {
-      if (strpos($name, '%') === FALSE) {
-        $name = "%{$name}%";
+    $searchCriteria = [
+      'name' => [
+          'sql' => 'contact_name',
+          'param' => 1,
+          'clause' => "contact_a.display_name LIKE %1"
+        ],
+        'email' => [
+          'sql' => 'email',
+          'param' => 2,
+          'clause' => "civicrm_email.email LIKE %2"
+        ],
+        'user_id' => [
+          'sql' => 'user_id',
+          'param' => 3,
+          'clause' => "civicrm_uf_match.uf_id = %3"
+        ]
+    ];
+    foreach ($searchCriteria as $field => $fieldDetails) {
+      $field = CRM_Utils_Array::value($fieldDetails['sql'],
+        $this->_formValues
+      );
+      if ($field != NULL) {
+        if (strpos($field, '%') === FALSE  && $fieldDetails['sql'] != 'user_id') {
+          $field = "%{$field}%";
+        }
+        $params[$fieldDetails['param']] = array($field, 'String');
+        $clause[] = $fieldDetails['clause'];
       }
-      $params[$count] = array($name, 'String');
-      $clause[] = "contact_a.display_name LIKE %{$count}";
-      $count++;
     }
-
     if (!empty($clause)) {
       $where .= ' AND ' . implode(' AND ', $clause);
     }
-
     return $this->whereClause($where, $params);
   }
 

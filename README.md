@@ -24,11 +24,11 @@ Clicking the "Move User" action takes you to the "User Mover" form where you can
 
 On Submit of the form you will recieve a success message if everything went as expected and an error message if it did not.
 
-
 ## TODOS:
+
 1. Increase security make sure only admin users can move users
 2. Add help text to let user know more about the consequences of their actions
-3. Add validation if you are overwritting a record
+3. Add validation if you are overwriting a record
 4. Add validation if you are going to create a double link
 5. Add search by CMS name and column for CMS name
 6. Add search by any email
