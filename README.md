@@ -14,7 +14,7 @@ It can be found by going to the CiviCRM Admin Menu -> Search -> Custom Searches 
 
 ### Move User Action
 
-This extension adds a "Move User" link to each row in the "Search For CMS Users" results AND to the Actions Dropdown on Contact's Summaries for contacts that are connected to a CMS User.
+This extension adds a "Reassign CMS User" link to each row in the "Search For CMS Users" results AND to the Actions Dropdown on Contact's Summaries for contacts that are connected to a CMS User for users logged in with the permission "Administer CiviCRM".
 
 ![Move User Action Screenshot](/images/MoveUser.png)
 
@@ -26,11 +26,9 @@ On Submit of the form you will recieve a success message if everything went as e
 
 ## TODOS:
 
-1. Increase security make sure only admin users can move users
+1. Ensure that the email address attached to the user is on the civicrm contact
+2. Deal with the uf_name in a logical way
 2. Add help text to let user know more about the consequences of their actions
-3. Add validation if you are overwriting a record
-4. Add validation if you are going to create a double link
-5. Add search by CMS name and column for CMS name
-6. Make get all users an api
-8. Add ability to delete connection
+3. Add confirmation to ensure user understand consequences of their actions
+5. Add search by CMS name and separate column for CMS name
 9. Add link to user land

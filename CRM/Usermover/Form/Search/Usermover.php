@@ -37,7 +37,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
     );
 
     $form->add('text',
-      'user_name',
+      'uf_name',
       E::ts('CiviCRM User Unique Identifier'),
       TRUE
     );
@@ -52,7 +52,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
      * if you are using the standard template, this array tells the template what elements
      * are part of the search criteria
      */
-    $form->assign('elements', array('contact_name', 'email', 'user_id', 'user_name'));
+    $form->assign('elements', array('contact_name', 'email', 'user_id', 'uf_name'));
   }
 
   /**
@@ -82,7 +82,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
       E::ts('Name') => 'sort_name',
       E::ts('Email') => 'email',
       E::ts('User ID') => 'user_id',
-      E::ts('User Unique Identifer in CiviCRM') => 'user_name',
+      E::ts('User Unique Identifer in CiviCRM') => 'uf_name',
     );
     return $columns;
   }
@@ -113,7 +113,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
       GROUP_CONCAT(civicrm_email.email) as email,
       contact_a.sort_name               as sort_name,
       civicrm_uf_match.uf_id            as user_id,
-      civicrm_uf_match.uf_name          as user_name
+      civicrm_uf_match.uf_name          as uf_name
     ";
   }
 
@@ -159,8 +159,8 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
         'param' => 3,
         'clause' => "civicrm_uf_match.uf_id = %3"
       ],
-      'user_name' => [
-          'sql' => 'user_name',
+      'uf_name' => [
+          'sql' => 'uf_name',
           'param' => 4,
           'clause' => "civicrm_uf_match.uf_name LIKE %4"
         ],
@@ -199,7 +199,12 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
    * @return void
    */
   function alterRow(&$row) {
+    $label = $row['user_id'];
+    $users = CRM_Usermover_Form_UserMover::apiShortCut('Usermover', 'Getallusers', []);
+    if (!empty($users['values'][$row['user_id']])) {
+      $label .= " ({$users['values'][$row['user_id']]})";
+    }
     $href = CRM_Core_Config::singleton()->userSystem->getUserRecordUrl($row['contact_id']);
-    $row['user_id'] = "<a href=$href>{$row['user_id']}</a>";
+    $row['user_id'] = "<a href=$href>{$label}</a>";
   }
 }

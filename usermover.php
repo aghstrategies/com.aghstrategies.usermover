@@ -4,7 +4,7 @@ require_once 'usermover.civix.php';
 use CRM_Usermover_ExtensionUtil as E;
 
 function usermover_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &$values) {
-  if ($objectName == 'Contact') {
+  if ($objectName == 'Contact'  && CRM_Core_Permission::check('administer CiviCRM')) {
     if ($op == 'contact.custom.actions' || $op == 'view.contact.activity') {
       $ufMatch = CRM_Usermover_Form_UserMover::apiShortCut('UFMatch', 'getsingle', ['contact_id' => $objectId]);
       if (!empty($ufMatch['uf_id'])) {

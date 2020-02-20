@@ -11,7 +11,13 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
   public function buildQuickForm() {
     $defaults = $userOptions = [];
 
-    self::getAvailableUsers($userOptions);
+    $userOptions = self::apiShortCut('Usermover', 'Getallusers', []);
+    if (!empty($userOptions['values'])) {
+      $userOptions = $userOptions['values'];
+      foreach ($userOptions as $id => $name) {
+        $userOptions[$id] = "$id ($name)";
+      }
+    }
 
     CRM_Core_Resources::singleton()->addScriptFile('com.aghstrategies.usermover', 'js/userMover.js');
 
@@ -70,45 +76,24 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
         'domain' => 'com.aghstrategies.usermover',
         1 => $error,
       )));
+      return $error;
     }
     return $results;
   }
 
-  public function validate() {
-    if (isset($this->_submitValues['uf_name'])) {
-      $params = [
-        'name' => $this->_submitValues['uf_name'],
-        'mail' => $this->_submitValues['uf_name'],
-      ];
-      $validUserName = CRM_Contact_Form_Task_Useradd::usernameRule($params);
-      print_r($validUserName); die();
-    }
-  }
-
-  /**
-   * Get All users in the CMS
-   * @param  array $userOptions array keyed id => id/user name
-   * @return array              $userOptions array keyed id => id/user name
-   */
-  public function getAvailableUsers(&$userOptions) {
-    $config = CRM_Core_Config::singleton();
-    if ($config->userSystem->is_wordpress) {
-      $allUsers = get_users();
-      foreach ($allUsers as $key => $userInfo) {
-        $userOptions[$userInfo->data->ID] = "{$userInfo->data->ID} ({$userInfo->data->user_login})";
-      }
-    }
-    return $userOptions;
-  }
+  // public function validate() {
+    // if (isset($this->_submitValues['uf_name'])) {
+    //   $params = [
+    //     'name' => $this->_submitValues['uf_name'],
+    //     'mail' => $this->_submitValues['uf_name'],
+    //   ];
+    //   $validUserName = CRM_Contact_Form_Task_Useradd::usernameRule($params);
+    // }
+  // }
 
   public function postProcess() {
     $values = $this->exportValues();
     if (isset($values['contact_id']) && isset($values['uf_id'])) {
-      // Delete any existing UFMatch records for the uf_id
-      $existingRecordForUFID = self::apiShortCut('UFMatch', 'get', [
-        'uf_id' => $values['uf_id'],
-        'api.UFMatch.delete' => ['id' => "\$value.id"],
-      ]);
 
       // Delete any existing UFMatch records for the civicrm contact
       $existingRecordForCiviID = self::apiShortCut('UFMatch', 'get', [
@@ -116,18 +101,31 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
         'api.UFMatch.delete' => ['id' => "\$value.id"],
       ]);
 
-      // Create new record
-      $result = self::apiShortCut('UFMatch', 'create', [
-        'uf_id' => $values['uf_id'],
-        // TODO validate a uf_name
-        'uf_name' => $values['uf_name'],
-        'contact_id' => $values['contact_id'],
-      ]);
+      if ($values['uf_id'] != 'none') {
 
-      CRM_Core_Session::setStatus(E::ts('User "%1" is now connected to contact id "%2"', array(
-        1 => $values['uf_id'],
-        2 => $values['contact_id'],
-      )));
+        // Delete any existing UFMatch records for the uf_id
+        $existingRecordForUFID = self::apiShortCut('UFMatch', 'get', [
+          'uf_id' => $values['uf_id'],
+          'api.UFMatch.delete' => ['id' => "\$value.id"],
+        ]);
+
+        // Create new record
+        $result = self::apiShortCut('UFMatch', 'create', [
+          'uf_id' => $values['uf_id'],
+          // TODO validate a uf_name
+          'uf_name' => $values['uf_name'],
+          'contact_id' => $values['contact_id'],
+        ]);
+        if ($result['is_error'] == 0) {
+          CRM_Core_Session::setStatus(E::ts('User "%1" is now connected to contact id "%2"', array(
+            1 => $values['uf_id'],
+            2 => $values['contact_id'],
+          ), E::ts('User Reassigned')), success);
+        }
+      }
+
+
+
     }
 
     parent::postProcess();
