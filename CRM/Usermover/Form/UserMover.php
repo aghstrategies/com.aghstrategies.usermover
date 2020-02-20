@@ -43,11 +43,11 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     if (!empty($userOptions)) {
       $userOptions['none'] = 'none';
       $this->add('select', 'uf_id', ts('to CMS User ID'), $userOptions, TRUE);
-      $this->addEntityRef('field_4', ts('Select Event'), array(
-        'entity' => 'Usermover',
-        'placeholder' => ts('- Select Event -'),
-        'select' => array('minimumInputLength' => 0),
-      ));
+      // $this->addEntityRef('field_4', ts('Select Event'), array(
+      //   'entity' => 'Usermover',
+      //   'placeholder' => ts('- Select Event -'),
+      //   'select' => array('minimumInputLength' => 0),
+      // ));
     } else {
       $this->add('text', 'uf_id', ts('to CMS User ID'), [], TRUE);
     }
