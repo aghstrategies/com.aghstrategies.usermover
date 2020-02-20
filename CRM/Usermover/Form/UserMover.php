@@ -81,6 +81,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
         'mail' => $this->_submitValues['uf_name'],
       ];
       $validUserName = CRM_Contact_Form_Task_Useradd::usernameRule($params);
+      print_r($validUserName); die();
     }
   }
 
@@ -118,7 +119,6 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       // Create new record
       $result = self::apiShortCut('UFMatch', 'create', [
         'uf_id' => $values['uf_id'],
-        // TODO specify a uf_name
         // TODO validate a uf_name
         'uf_name' => $values['uf_name'],
         'contact_id' => $values['contact_id'],

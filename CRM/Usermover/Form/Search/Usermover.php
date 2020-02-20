@@ -36,6 +36,12 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
       TRUE
     );
 
+    $form->add('text',
+      'user_name',
+      E::ts('CiviCRM User Unique Identifier'),
+      TRUE
+    );
+
     // Optionally define default search values
     $form->setDefaults(array(
       'contact_name' => '',
@@ -46,7 +52,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
      * if you are using the standard template, this array tells the template what elements
      * are part of the search criteria
      */
-    $form->assign('elements', array('contact_name', 'email', 'user_id'));
+    $form->assign('elements', array('contact_name', 'email', 'user_id', 'user_name'));
   }
 
   /**
@@ -76,6 +82,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
       E::ts('Name') => 'sort_name',
       E::ts('Email') => 'email',
       E::ts('User ID') => 'user_id',
+      E::ts('User Unique Identifer in CiviCRM') => 'user_name',
     );
     return $columns;
   }
@@ -105,7 +112,8 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
       contact_a.id                      as contact_id,
       GROUP_CONCAT(civicrm_email.email) as email,
       contact_a.sort_name               as sort_name,
-      civicrm_uf_match.uf_id            as user_id
+      civicrm_uf_match.uf_id            as user_id,
+      civicrm_uf_match.uf_name          as user_name
     ";
   }
 
@@ -140,17 +148,22 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
           'sql' => 'contact_name',
           'param' => 1,
           'clause' => "contact_a.display_name LIKE %1"
+      ],
+      'email' => [
+        'sql' => 'email',
+        'param' => 2,
+        'clause' => "civicrm_email.email LIKE %2"
+      ],
+      'user_id' => [
+        'sql' => 'user_id',
+        'param' => 3,
+        'clause' => "civicrm_uf_match.uf_id = %3"
+      ],
+      'user_name' => [
+          'sql' => 'user_name',
+          'param' => 4,
+          'clause' => "civicrm_uf_match.uf_name LIKE %4"
         ],
-        'email' => [
-          'sql' => 'email',
-          'param' => 2,
-          'clause' => "civicrm_email.email LIKE %2"
-        ],
-        'user_id' => [
-          'sql' => 'user_id',
-          'param' => 3,
-          'clause' => "civicrm_uf_match.uf_id = %3"
-        ]
     ];
     foreach ($searchCriteria as $field => $fieldDetails) {
       $field = CRM_Utils_Array::value($fieldDetails['sql'],

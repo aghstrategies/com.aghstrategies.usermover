@@ -31,7 +31,6 @@ On Submit of the form you will recieve a success message if everything went as e
 3. Add validation if you are overwriting a record
 4. Add validation if you are going to create a double link
 5. Add search by CMS name and column for CMS name
-6. Add search by any email
-7. fix search to actually filter by user id etc.
+6. Make get all users an api
 8. Add ability to delete connection
 9. Add link to user land
