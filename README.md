@@ -22,12 +22,13 @@ Clicking the "Move User" action takes you to the "User Mover" form where you can
 
 ![User Mover Form](/images/userMover.png)
 
-On Submit of the form you will recieve a success message if everything went as expected and an error message if it did not.
+On Submit of the form you will receive a success message if everything went as expected and an error message if it did not.
 
 ## TODOS:
 
-1. Ensure that the email address attached to the user is on the civicrm contact
-2. Deal with the uf_name in a logical way
-2. Add help text/improve display to let user know more about the consequences of their actions
-3. Add confirmation to ensure user understand consequences of their actions
+1. Ensure that the email address attached to the user is on the CiviCRM contact
+2. Deal with the `uf_name` in a logical way
+3. Add help text/improve display to let user know more about the consequences of their actions
+4. Write get all users for drupal and joomla
+3. Add confirmation page to ensure user understands consequences of their actions
 9. Add link to user land

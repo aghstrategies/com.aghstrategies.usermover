@@ -41,7 +41,6 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     $this->addEntityRef('contact_id', ts('Connect CiviCRM Contact'), [], TRUE);
 
     // TODO add validation that this is a valid user id
-    // TODO make this a select of only available valid users
     // TODO make it possible to select a user based on their username
     if (!empty($userOptions)) {
       $userOptions['none'] = 'none';
@@ -129,9 +128,6 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
           1 => $values['contact_id'],
         )), E::ts('User Connection Removed'), 'success');
       }
-
-
-
     }
 
     parent::postProcess();
