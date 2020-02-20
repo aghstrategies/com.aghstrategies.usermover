@@ -3,7 +3,7 @@
   <item>
     <path>civicrm/usermover</path>
     <page_callback>CRM_Usermover_Form_UserMover</page_callback>
-    <title>User Mover</title>
+    <title>Reassign CMS User</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
 </menu>

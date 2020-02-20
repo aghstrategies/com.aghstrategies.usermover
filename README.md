@@ -28,7 +28,6 @@ On Submit of the form you will recieve a success message if everything went as e
 
 1. Ensure that the email address attached to the user is on the civicrm contact
 2. Deal with the uf_name in a logical way
-2. Add help text to let user know more about the consequences of their actions
+2. Add help text/improve display to let user know more about the consequences of their actions
 3. Add confirmation to ensure user understand consequences of their actions
-5. Add search by CMS name and separate column for CMS name
 9. Add link to user land
