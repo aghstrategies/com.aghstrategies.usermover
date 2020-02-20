@@ -40,11 +40,14 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     // add form elements
     $this->addEntityRef('contact_id', ts('Connect CiviCRM Contact'), [], TRUE);
 
-    // TODO add validation that this is a valid user id
-    // TODO make it possible to select a user based on their username
     if (!empty($userOptions)) {
       $userOptions['none'] = 'none';
-      $this->addElement('select', 'uf_id', ts('to CMS User ID'), $userOptions);
+      $this->add('select', 'uf_id', ts('to CMS User ID'), $userOptions, TRUE);
+      $this->addEntityRef('field_4', ts('Select Event'), array(
+        'entity' => 'Usermover',
+        'placeholder' => ts('- Select Event -'),
+        'select' => array('minimumInputLength' => 0),
+      ));
     } else {
       $this->add('text', 'uf_id', ts('to CMS User ID'), [], TRUE);
     }
@@ -58,6 +61,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
         'isDefault' => TRUE,
       ),
     ));
+
     $this->setDefaults($defaults);
 
     // export form elements
