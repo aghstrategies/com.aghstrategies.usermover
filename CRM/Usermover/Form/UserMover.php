@@ -81,6 +81,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     return $results;
   }
 
+  // TODO make sure the username added is valid
   // public function validate() {
     // if (isset($this->_submitValues['uf_name'])) {
     //   $params = [
@@ -120,8 +121,13 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
           CRM_Core_Session::setStatus(E::ts('User "%1" is now connected to contact id "%2"', array(
             1 => $values['uf_id'],
             2 => $values['contact_id'],
-          ), E::ts('User Reassigned')), SUCCESS);
+          )),E::ts('User Reassigned'), 'success');
         }
+      }
+      else {
+        CRM_Core_Session::setStatus(E::ts('CiviCRM contact ID "%1" no longer connected to a User', array(
+          1 => $values['contact_id'],
+        )), E::ts('User Connection Removed'), 'success');
       }
 
 
