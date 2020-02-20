@@ -23,10 +23,22 @@ function _civicrm_api3_usermover_Getallusers_spec(&$spec) {
  * @throws API_Exception
  */
 function civicrm_api3_usermover_Getallusers($params) {
-    $allUsers = getAvailableUsers();
-
-    // Spec: civicrm_api3_create_success($values = 1, $params = array(), $entity = NULL, $action = NULL)
-    return civicrm_api3_create_success($allUsers, $params, 'Usermover', 'Getallusers');
+  $userOptions = [];
+  $config = CRM_Core_Config::singleton();
+  if ($config->userSystem->is_wordpress) {
+    $allUsers = get_users();
+    foreach ($allUsers as $key => $userInfo) {
+      if (!empty($params['user_login']) && $params['user_login'] == $userInfo->data->user_login) {
+        $userOptions['login'] = $userInfo->data->user_login;
+        $userOptions['uf_id'] = $userInfo->data->ID;
+      }
+      elseif (empty($params['user_login'])) {
+        $userOptions[$userInfo->data->ID] = $userInfo->data->user_login;
+      }
+    }
+  }
+  // Spec: civicrm_api3_create_success($values = 1, $params = array(), $entity = NULL, $action = NULL)
+  return civicrm_api3_create_success($userOptions, $params, 'Usermover', 'Getallusers');
 }
 
 

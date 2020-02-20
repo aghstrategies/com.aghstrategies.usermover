@@ -42,17 +42,22 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
       TRUE
     );
 
+    $form->add('text',
+      'user_name',
+      E::ts('User Name'),
+      TRUE
+    );
+
     // Optionally define default search values
     $form->setDefaults(array(
       'contact_name' => '',
       'user_id' => '',
     ));
-
     /**
      * if you are using the standard template, this array tells the template what elements
      * are part of the search criteria
      */
-    $form->assign('elements', array('contact_name', 'email', 'user_id', 'uf_name'));
+    $form->assign('elements', array('contact_name', 'email', 'user_id', 'uf_name', 'user_name'));
   }
 
   /**
@@ -82,6 +87,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
       E::ts('Name') => 'sort_name',
       E::ts('Email') => 'email',
       E::ts('User ID') => 'user_id',
+      E::ts('User Name') => 'user_name',
       E::ts('User Unique Identifer in CiviCRM') => 'uf_name',
     );
     return $columns;
@@ -160,21 +166,42 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
         'clause' => "civicrm_uf_match.uf_id = %3"
       ],
       'uf_name' => [
-          'sql' => 'uf_name',
-          'param' => 4,
-          'clause' => "civicrm_uf_match.uf_name LIKE %4"
-        ],
+        'sql' => 'uf_name',
+        'param' => 4,
+        'clause' => "civicrm_uf_match.uf_name LIKE %4"
+      ],
+      'user_name' => [
+        'sql' => 'user_name',
+        'param' => 5,
+        'clause' => "civicrm_uf_match.uf_id = %5"
+      ]
     ];
+
     foreach ($searchCriteria as $field => $fieldDetails) {
       $field = CRM_Utils_Array::value($fieldDetails['sql'],
         $this->_formValues
       );
       if ($field != NULL) {
-        if (strpos($field, '%') === FALSE  && $fieldDetails['sql'] != 'user_id') {
-          $field = "%{$field}%";
+        switch ($fieldDetails['sql']) {
+          case 'user_id':
+            $params[$fieldDetails['param']] = array($field, 'String');
+            $clause[] = $fieldDetails['clause'];
+            break;
+
+          case 'user_name':
+            $userInfo = CRM_Usermover_Form_UserMover::apiShortCut('Usermover', 'Getallusers', ['user_login' => $field]);
+            $params[$fieldDetails['param']] = array($userInfo['values']['uf_id'], 'String');
+            $clause[] = $fieldDetails['clause'];
+            break;
+
+          default:
+            if (strpos($field, '%') === FALSE) {
+              $field = "%{$field}%";
+            }
+            $params[$fieldDetails['param']] = array($field, 'String');
+            $clause[] = $fieldDetails['clause'];
+            break;
         }
-        $params[$fieldDetails['param']] = array($field, 'String');
-        $clause[] = $fieldDetails['clause'];
       }
     }
     if (!empty($clause)) {
@@ -202,9 +229,9 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
     $label = $row['user_id'];
     $users = CRM_Usermover_Form_UserMover::apiShortCut('Usermover', 'Getallusers', []);
     if (!empty($users['values'][$row['user_id']])) {
-      $label .= " ({$users['values'][$row['user_id']]})";
+      $row['user_name'] = $users['values'][$row['user_id']];
     }
     $href = CRM_Core_Config::singleton()->userSystem->getUserRecordUrl($row['contact_id']);
-    $row['user_id'] = "<a href=$href>{$label}</a>";
+    $row['user_id'] = "<a href=$href>{$row['user_id']}</a>";
   }
 }

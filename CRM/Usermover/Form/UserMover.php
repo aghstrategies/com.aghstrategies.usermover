@@ -120,7 +120,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
           CRM_Core_Session::setStatus(E::ts('User "%1" is now connected to contact id "%2"', array(
             1 => $values['uf_id'],
             2 => $values['contact_id'],
-          ), E::ts('User Reassigned')), success);
+          ), E::ts('User Reassigned')), SUCCESS);
         }
       }
 
