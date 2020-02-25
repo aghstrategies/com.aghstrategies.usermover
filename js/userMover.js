@@ -1,8 +1,12 @@
 CRM.$(function ($) {
 
+  // Add required star to uf_name field
+  $('label[for="uf_name"]').append('<span class="crm-marker" title="This field is required."> *</span>');
+
   // Only display user name field if an id has been selected for uf_id
   var cmsUserSelected = function() {
-    if ($('select#uf_id').val() == 'none') {
+
+    if ($('#uf_id').val() == '') {
       $('input#uf_name').parent().parent().hide();
       $('.userMoverHelp').text('Submitting this form will result in removing any and all connections between the selected CiviCRM and the CMS.');
     }
@@ -13,5 +17,5 @@ CRM.$(function ($) {
   };
 
   cmsUserSelected();
-  $('select#uf_id').change(cmsUserSelected);
+  $('#uf_id').change(cmsUserSelected);
 });
