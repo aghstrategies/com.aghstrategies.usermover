@@ -21,6 +21,24 @@ function usermover_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &
 }
 
 /**
+ * Implements hook_civicrm_validateForm().
+ *
+ * @param string $formName
+ * @param array $fields
+ * @param array $files
+ * @param CRM_Core_Form $form
+ * @param array $errors
+ */
+function usermover_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
+  if ($formName == 'CRM_Usermover_Form_UserMover') {
+    if (!empty($form->_submitValues['uf_id']) && empty($form->_submitValues['uf_name'])) {
+      $form->setElementError('uf_name', 'You must enter a Unique User Name');
+    }
+  }
+  return;
+}
+
+/**
  * Implements hook_civicrm_config().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config/

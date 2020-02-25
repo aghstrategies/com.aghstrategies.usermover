@@ -16,12 +16,13 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     // If there is a UFMatch id in the url use that
     if (!empty($_GET['id'])) {
       $existingRecord = self::apiShortCut('UFMatch', 'getsingle', ['id' => $_GET['id']]);
-      if (!empty($defaults['contact_id'])) {
+      if (!empty($existingRecord['contact_id'])) {
         $defaults['contact_id'] = $existingRecord['contact_id'];
         $defaults['uf_id'] = $existingRecord['uf_id'];
         $defaults['uf_name'] = $existingRecord['uf_name'];
       }
-    } else {
+    }
+    if (empty($defaults['contact_id'])) {
       if (isset($_GET['cid'])) {
         $defaults['contact_id'] = $_GET['cid'];
       }
@@ -46,11 +47,10 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
         'isDefault' => TRUE,
       ),
     ));
+    $this->setDefaults($defaults);
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-
-    $this->setDefaults($defaults);
 
     parent::buildQuickForm();
   }
@@ -71,23 +71,6 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       ];
     }
     return $results;
-  }
-
-  // TODO make sure the username added is valid
-  public function validateForm() {
-    print_r($this); die();
-    if (isset($this->_submitValues['uf_id']) && empty($this->_submitValues['uf_name'])) {
-      $this->setElementError('uf_name', 'You must enter a Unique User Name');
-      // $this->_errors['uf_name'] = 'You must enter a Unique User Name';
-    }
-    return;
-    // if (isset($this->_submitValues['uf_name'])) {
-    //   $params = [
-    //     'name' => $this->_submitValues['uf_name'],
-    //     'mail' => $this->_submitValues['uf_name'],
-    //   ];
-    //   $validUserName = CRM_Contact_Form_Task_Useradd::usernameRule($params);
-    // }
   }
 
   public function postProcess() {
