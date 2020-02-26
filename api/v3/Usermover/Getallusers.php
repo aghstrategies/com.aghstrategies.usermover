@@ -23,6 +23,9 @@ function civicrm_api3_usermover_Getallusers($params) {
       elseif (empty($params['user_login'])) {
         $userOptions[$userInfo->data->ID] = $userInfo->data->user_login;
       }
+      if ($params['pretty_print'] == 1) {
+        $userOptions[$userInfo->data->ID] = "{$userInfo->data->user_login} ({$userInfo->data->ID})";
+      }
     }
   }
   // Spec: civicrm_api3_create_success($values = 1, $params = array(), $entity = NULL, $action = NULL)

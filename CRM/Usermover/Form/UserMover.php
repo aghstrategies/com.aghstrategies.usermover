@@ -33,10 +33,23 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
 
     // add form elements
     $this->addEntityRef('contact_id', ts('Connect CiviCRM Contact'), [], TRUE);
-    $this->addEntityRef('uf_id', ts('to CMS User ID'), array(
-      'entity' => 'Usermover',
-      'placeholder' => ts('- No User -'),
-    ));
+
+    // There is a weird bug that I cannot for the life of me figure out where
+    // this is not defaulting SO I am going to use a select for now
+    // TODO get entityRef for custom api to work right
+    // $this->addEntityRef('uf_id', ts('to CMS User ID'), [
+    //   'entity' => 'Usermover',
+    //   'placeholder' => ts('- No User -'),
+    //   'select' => array('minimumInputLength' => 0),
+    //   'api' => ['label_field' => 'label', 'search_field' => 'label'],
+    // ]);
+
+    $userOptions = self::apiShortCut('Usermover', 'getallusers', ['pretty_print' => 1]);
+    // print_r($userOptions); die();
+    $this->add('select', 'uf_id', ts('CMS ID'), $userOptions['values'], FALSE, [
+      'class' => "crm-select2",
+      'placeholder' => "- No User -",
+    ]);
 
     $this->add('text', 'uf_name', ts('Unique Identifier in the CMS'));
 

@@ -48,3 +48,15 @@ function _civicrm_api3_usermover_getlist_output($result, $request) {
     }
     return $data;
 }
+
+/**
+ * Get event list parameters.
+ *
+ * @see _civicrm_api3_generic_getlist_params
+ *
+ * @param array $request
+ */
+function _civicrm_api3_usermover_getlist_params(&$request) {
+  $fieldsToReturn = ['id', 'label'];
+  $request['params']['return'] = array_unique(array_merge($fieldsToReturn, $request['extra']));
+}

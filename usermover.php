@@ -31,8 +31,29 @@ function usermover_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &
  */
 function usermover_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
   if ($formName == 'CRM_Usermover_Form_UserMover') {
-    if (!empty($form->_submitValues['uf_id']) && empty($form->_submitValues['uf_name'])) {
-      $form->setElementError('uf_name', 'You must enter a Unique User Name');
+    // If connecting to a CMS User you must include a Unique Identifier in the CMS
+    if (!empty($form->_submitValues['uf_id'])) {
+      // Ensure UF Name is set
+      if (empty($form->_submitValues['uf_name'])) {
+        $form->setElementError('uf_name', '"Unique Identifier in the CMS" is a required field when connecting to a CMS User ID');
+      }
+      // Ensure UF Name is unique (no other existing UF Match records with that UF Name... not including the ones that will be deleted)
+      else {
+        $ufMatches = CRM_Usermover_Form_UserMover::apiShortCut('UFMatch', 'get', ['uf_name' => $form->_submitValues['uf_name']]);
+        if (!empty($ufMatches['values'])) {
+          foreach ($ufMatches['values'] as $key => $ufDetails) {
+            if ($ufDetails['uf_id'] == $form->_submitValues['uf_id']) {
+              unset($ufMatches['values'][$key]);
+            }
+            if ($ufDetails['contact_id'] == $form->_submitValues['contact_id']) {
+              unset($ufMatches['values'][$key]);
+            }
+          }
+          if (count($ufMatches['values']) > 0) {
+            $form->setElementError('uf_name', '"Unique Identifier in the CMS" is not unique... there is another record in the system using this UF_Name');
+          }
+        }
+      }
     }
   }
   return;
