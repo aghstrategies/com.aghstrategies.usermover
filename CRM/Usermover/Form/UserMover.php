@@ -111,14 +111,17 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       ]);
 
       if ($result['is_error'] == 0) {
-        CRM_Core_Session::setStatus(E::ts('User id %1 is now connected to contact id %2', array(
+        CRM_Core_Session::setStatus(E::ts('User id <a href="%4">%1</a> is now connected to <a href="%3">contact id %2</a>', array(
           1 => $values['uf_id'],
           2 => $values['contact_id'],
+          3 => CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$values['contact_id']}"),
+          4 => CRM_Core_Config::singleton()->userSystem->getUserRecordUrl($values['contact_id']),
         )),E::ts('User Reassigned'), 'success');
       }
     } else {
-      CRM_Core_Session::setStatus(E::ts('CiviCRM contact ID "%1" no longer connected to a User', array(
+      CRM_Core_Session::setStatus(E::ts('CiviCRM <a href="%2">contact ID "%1"</a> no longer connected to a User', array(
         1 => $values['contact_id'],
+        2 => CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$values['contact_id']}"),
       )), E::ts('User Connection Removed'), 'success');
     }
 
