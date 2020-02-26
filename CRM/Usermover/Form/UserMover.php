@@ -11,6 +11,17 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
   public function buildQuickForm() {
     $defaults = [];
 
+    $csid = self::apiShortCut('CustomSearch', 'getvalue', [
+      'name' => "CRM_Usermover_Form_Search_Usermover",
+      'return' => 'value',
+    ]);
+
+    if (!empty($csid)) {
+      CRM_Core_Session::setStatus(E::ts('Search for Connected Users using the <a href="%1">Search For CMS Users</a> form.', array(
+        1 => CRM_Utils_System::url('civicrm/contact/search/custom', "reset=1&csid={$csid}"),
+      )), E::ts('Need to Search?'), 'no-popup');
+    }
+
     CRM_Core_Resources::singleton()->addScriptFile('com.aghstrategies.usermover', 'js/userMover.js');
 
     // If there is a UFMatch id in the url use that
