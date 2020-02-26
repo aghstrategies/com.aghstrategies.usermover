@@ -67,7 +67,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     $this->addButtons(array(
       array(
         'type' => 'submit',
-        'name' => E::ts('Submit'),
+        'name' => E::ts('Confirm'),
         'isDefault' => TRUE,
       ),
     ));
@@ -135,7 +135,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
         2 => CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$values['contact_id']}"),
       )), E::ts('User Connection Removed'), 'success');
     }
-
+    // CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/contact/merge', $urlParams));
     parent::postProcess();
   }
 

@@ -27,8 +27,8 @@ On Submit of the form you will receive a success message if everything went as e
 ## TODOS:
 
 1. Ensure that the email address attached to the user is on the CiviCRM contact
-2. Deal with the `uf_name` in a logical way
-3. Add help text/improve display to let user know more about the consequences of their actions
-4. Write get all users for drupal and joomla
-3. Add confirmation page to ensure user understands consequences of their actions
-9. Add link to user land
+2. Add help text/improve display to let user know more about the consequences of their actions
+3. Write get all users for drupal and joomla
+4. Add confirmation page to ensure user understands consequences of their actions
+5. Add link to user land
+6. Debug using entityref (get single)
