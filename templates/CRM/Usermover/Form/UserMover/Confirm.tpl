@@ -29,9 +29,9 @@
     <tbody>
       {foreach from=$contacts item=contact}
        <tr>
-           <td><a href="{$contact.contact_url}">{$contact.display_name}</a></td>
-           <td>with two columns</td>
-           <td>with two columns</td>
+           <td>{$contact.display_name}</td>
+           <td>{$contact.user}</td>
+           <td>{$contact.uf_name}</td>
        </tr>
       {/foreach}
    </tbody>
