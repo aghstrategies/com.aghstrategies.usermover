@@ -25,6 +25,7 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
       }
     }
 
+    // Add url values to form so you can get them in postprocess
     $this->addElement('hidden','contact_id', $defaults['contact_id'], array('id'=> 'contact_id'));
     $this->addElement('hidden','uf_id', $defaults['uf_id'], array('id'=> 'uf_id'));
     $this->addElement('hidden','uf_name', $defaults['uf_name'], array('id'=> 'uf_name'));
@@ -36,7 +37,6 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
         'isDefault' => TRUE,
       ),
     ));
-
 
     // export form elements to post process
     $this->assign('elementNames', $this->getRenderableElementNames());
@@ -135,7 +135,7 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
           if ($ufmatch['uf_name'] != $changes['uf_name'] && $ufmatch['contact_id'] == $changes['contact_id']) {
             $newRecord['uf_name'] = "Unique Identifier will be updated from <span style='text-decoration: line-through;'>{$ufmatch['uf_name']}</span> to <strong>{$newRecord['uf_name']}</strong>";
           }
-          // Removin user connection
+          // Removing a user connection
           if (empty($changes['uf_id'])) {
             $newRecord['display_name'] = "{$newRecord['display_name']} - Will no longer be connected to a user";
             $newRecord['user'] = "<span style='text-decoration: line-through;'>{$users[$ufmatch['uf_id']]}</span>";
