@@ -3,13 +3,13 @@
   <item>
     <path>civicrm/usermover</path>
     <page_callback>CRM_Usermover_Form_UserMover</page_callback>
-    <title>Reassign CMS User</title>
+    <title>Edit CMS User Connection</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
     <path>civicrm/usermover/confirm</path>
     <page_callback>CRM_Usermover_Form_UserMover_Confirm</page_callback>
-    <title>Confirm User Changes</title>
+    <title>Confirm User Connection Changes</title>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
 </menu>
