@@ -11,26 +11,23 @@ use CRM_Usermover_ExtensionUtil as E;
  * @throws API_Exception
  */
 function civicrm_api3_usermover_Getallusers($params) {
-  $userOptions = [];
   $config = CRM_Core_Config::singleton();
-  if ($config->userSystem->is_wordpress) {
-    $allUsers = get_users();
-    foreach ($allUsers as $key => $userInfo) {
-      if (!empty($params['user_login'])) {
-        if (stripos($userInfo->data->user_login, $params['user_login']) !== FALSE || $userInfo->data->ID == $params['user_login']) {
-          $userOptions[$userInfo->data->ID] = "{$userInfo->data->ID} / {$userInfo->data->user_login}";
-        }
-      }
-      elseif (empty($params['user_login'])) {
-        $userOptions[$userInfo->data->ID] = $userInfo->data->user_login;
-      }
-      if ($params['pretty_print'] == 1) {
-        $userOptions[$userInfo->data->ID] = "{$userInfo->data->ID} / {$userInfo->data->user_login}";
+  $userOptions = getAvailableUsers();
+  $usersToReturn = [];
+
+  foreach ($userOptions as $key => $userInfo) {
+    if (!empty($params['user_login'])) {
+      if (stripos($userInfo['user_login'], $params['user_login']) !== FALSE || $key == $params['user_login']) {
+        $usersToReturn[$userInfo['id']] = "{$userInfo['id']} / {$userInfo['user_login']}";
       }
     }
+    else {
+      $usersToReturn[$userInfo['id']] = "{$userInfo['id']} / {$userInfo['user_login']}";
+    }
   }
+
   // Spec: civicrm_api3_create_success($values = 1, $params = array(), $entity = NULL, $action = NULL)
-  return civicrm_api3_create_success($userOptions, $params, 'Usermover', 'Getallusers');
+  return civicrm_api3_create_success($usersToReturn, $params, 'Usermover', 'Getallusers');
 }
 
 
@@ -42,12 +39,21 @@ function civicrm_api3_usermover_Getallusers($params) {
 function getAvailableUsers() {
   $userOptions = [];
   $config = CRM_Core_Config::singleton();
+
+  // Wordpress
   if ($config->userSystem->is_wordpress) {
     $allUsers = get_users();
     foreach ($allUsers as $key => $userInfo) {
-      $userOptions[$userInfo->data->ID] = $userInfo->data->user_login;
+      $userOptions[$userInfo->data->ID] = [
+        'id' => $userInfo->data->ID,
+        'user_login' => $userInfo->data->user_login,
+      ];
     }
   }
-  // TODO get all users for other cms's
+
+  // TODO Drupal
+  // TODO Joomla
+  // TODO Backdrop
+
   return $userOptions;
 }
