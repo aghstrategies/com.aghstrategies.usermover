@@ -62,14 +62,14 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     // this is not defaulting SO I am going to use a select for now
     // TODO get entityRef for custom api to work right
     // $this->addEntityRef('uf_id', ts('to CMS User ID'), [
-    //   'entity' => 'Usermover',
+    //   'entity' => 'UserMover',
     //   'placeholder' => ts('- No User -'),
     //   'select' => array('minimumInputLength' => 0),
     //   'api' => ['label_field' => 'label', 'search_field' => 'label'],
     // ]);
 
     $userOptions = self::apiShortCut('UserMover', 'Get', ['pretty_print' => 1]);
-    // print_r($userOptions); die();
+
     $this->add('select', 'uf_id', ts('CMS ID'), $userOptions['values'], FALSE, [
       'class' => "crm-select2",
       'placeholder' => "- No User -",

@@ -77,7 +77,7 @@ function civicrm_api3_user_mover_Get($params) {
   // If pretty_print reformat results id => "id / name"
   if (!empty($usersToReturn) && $params['pretty_print'] == 1) {
     foreach ($usersToReturn as $id => $details) {
-      $usersToReturn[$id] = "{$details['id']} / {$details['user_login']}";
+      $usersToReturn[$id] = $details['label'];
     }
   }
 
@@ -100,8 +100,10 @@ function getAvailableUsers() {
     foreach ($allUsers as $key => $userInfo) {
       $userOptions[$userInfo->data->ID] = [
         'id' => $userInfo->data->ID,
+        'uf_id' => $userInfo->data->ID,
         'user_login' => $userInfo->data->user_login,
         'uf_name' => $userInfo->data->user_email,
+        'label' => "{$userInfo->data->ID} ({$userInfo->data->user_login})",
       ];
     }
   }
@@ -111,4 +113,37 @@ function getAvailableUsers() {
   // TODO Backdrop
 
   return $userOptions;
+}
+
+function _civicrm_api3_user_mover_getlist_defaults($request) {
+  return [
+    'label_field' => 'label',
+    'search_field' => 'label',
+    'id_field' => 'id',
+  ];
+}
+
+// function _civicrm_api3_user_mover_getlist_output($result, $request) {
+//   $data = [];
+//     if (!empty($result['values'])) {
+//       foreach ($result['values'] as $row) {
+//         $data[$row[$request['id_field']]] = array(
+//           'id' => $row[$request['id_field']],
+//           'label' => $row[$request['label_field']],
+//         );
+//       }
+//     }
+//     return $data;
+// }
+
+/**
+ * Get usermover list parameters.
+ *
+ * @see _civicrm_api3_generic_getlist_params
+ *
+ * @param array $request
+ */
+function _civicrm_api3_user_mover_getlist_params(&$request) {
+  $fieldsToReturn = ['id', 'label'];
+  $request['params']['return'] = array_unique(array_merge($fieldsToReturn, $request['extra']));
 }
