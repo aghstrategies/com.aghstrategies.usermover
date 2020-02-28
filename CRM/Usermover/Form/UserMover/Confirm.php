@@ -42,7 +42,7 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     $this->assign('elementNames', $this->getRenderableElementNames());
 
     // Get available user options
-    $userOptions = CRM_Usermover_Form_UserMover::apiShortCut('Usermover', 'getallusers', ['pretty_print' => 1]);
+    $userOptions = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'Get', ['pretty_print' => 1]);
 
     // Get contacts that will be changed to display
     $contactsThatWillBeChanged = self::getContactsThatWillBeChanged($defaults, $userOptions['values']);

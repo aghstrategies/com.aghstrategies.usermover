@@ -5,11 +5,11 @@ use Civi\Test\HookInterface;
 use Civi\Test\TransactionalInterface;
 
 /**
- * Usermover.Getallusers API Test Case
+ * UserMover.Get API Test Case
  * This is a generic test class implemented with PHPUnit.
  * @group headless
  */
-class api_v3_Usermover_GetallusersTest extends \PHPUnit\Framework\TestCase implements HeadlessInterface, HookInterface, TransactionalInterface {
+class api_v3_UserMover_GetTest extends \PHPUnit\Framework\TestCase implements HeadlessInterface, HookInterface, TransactionalInterface {
   use \Civi\Test\Api3TestTrait;
 
   /**
@@ -46,7 +46,7 @@ class api_v3_Usermover_GetallusersTest extends \PHPUnit\Framework\TestCase imple
    * Note how the function name begins with the word "test".
    */
   public function testApiExample() {
-    $result = civicrm_api3('Usermover', 'Getallusers', array('magicword' => 'sesame'));
+    $result = civicrm_api3('UserMover', 'Get', array('magicword' => 'sesame'));
     $this->assertEquals('Twelve', $result['values'][12]['name']);
   }
 

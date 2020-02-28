@@ -178,7 +178,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
         switch ($fieldDetails['sql']) {
           // TODO get search to work by id or user name
           case 'user_id':
-            $userInfo = CRM_Usermover_Form_UserMover::apiShortCut('Usermover', 'Getallusers', ['user_login' => $field]);
+            $userInfo = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'Get', ['user_login' => $field]);
             // print_r($userInfo); die();
             $usersThatFitSearch = [];
             foreach ($userInfo['values'] as $key => $value) {
@@ -224,7 +224,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
    */
   function alterRow(&$row) {
     $label = $row['user_id'];
-    $users = CRM_Usermover_Form_UserMover::apiShortCut('Usermover', 'Getallusers', ['pretty_print' => 1]);
+    $users = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'Get', ['pretty_print' => 1]);
     $href = CRM_Core_Config::singleton()->userSystem->getUserRecordUrl($row['contact_id']);
     $row['user_id'] = "<a href=$href>{$users['values'][$row['user_id']]}</a>";
   }

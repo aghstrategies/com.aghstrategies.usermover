@@ -68,7 +68,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     //   'api' => ['label_field' => 'label', 'search_field' => 'label'],
     // ]);
 
-    $userOptions = self::apiShortCut('Usermover', 'getallusers', ['pretty_print' => 1]);
+    $userOptions = self::apiShortCut('UserMover', 'Get', ['pretty_print' => 1]);
     // print_r($userOptions); die();
     $this->add('select', 'uf_id', ts('CMS ID'), $userOptions['values'], FALSE, [
       'class' => "crm-select2",
