@@ -43,8 +43,10 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
 
     // Get contacts that will be changed to display
     $contactsThatWillBeChanged = self::getContactsThatWillBeChanged($defaults);
-    $this->assign('contacts', $contactsThatWillBeChanged);
+    $consequences = self::getConsequencesOfThisAction($defaults);
 
+    $this->assign('contacts', $contactsThatWillBeChanged);
+    $this->assign('consequences', $consequences);
     parent::buildQuickForm();
   }
 
@@ -109,6 +111,60 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
   }
 
 
+  public function getConsequencesOfThisAction($changes) {
+    $consequences = $existingRecords = [];
+
+    if (!empty($changes['contact_id'])) {
+      // First format the submitted changes for display -> This is the record that will be created
+      if (!empty($changes['uf_id'])) {
+        $consequences[] = "{$changes['contact_id']} will be connected to {$changes['uf_id']}";
+      }
+      $existingRecords = self::findContactsThatWillBeDeleted($changes);
+
+      foreach ($existingRecords as $key => $ufmatch) {
+        if ($ufmatch['contact_id'] != $changes['contact_id'] && $ufmatch['uf_id'] == $changes['uf_id']) {
+          $record = self::formatContactForDisplay($ufmatch, $changes, 'orphanedContact');
+          print_r($record); die();
+          $consequences[] = "{$changes['contact_id']} will be connected to {$changes['uf_id']}";
+        }
+        if ($ufmatch['contact_id'] == $changes['contact_id'] && $ufmatch['uf_id'] != $changes['uf_id']) {
+          $record = self::formatContactForDisplay($ufmatch, $changes, 'orphanedUser');
+          print_r($record); die();
+        }
+      }
+
+      if (count($existingRecords) == 1) {
+        foreach ($existingRecords as $key => $ufmatch) {
+
+          // If just updating the Unique Identifier
+          if ($ufmatch['uf_name'] != $changes['uf_name'] && $ufmatch['contact_id'] == $changes['contact_id']) {
+            $newRecord['uf_name'] = "Unique Identifier will be updated from <span style='text-decoration: line-through;'>{$ufmatch['uf_name']}</span> to <strong>{$newRecord['uf_name']}</strong>";
+          }
+          // Removing a user connection
+          if (empty($changes['uf_id'])) {
+            $user = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'getsingle', ['id' => $ufmatch['uf_id']]);
+            if (!empty($user['label'])) {
+              $userLabel = $user['label'];
+            }
+            else {
+              $userLabel = $ufmatch['uf_id'];
+            }
+            $newRecord['user'] = "<span style='text-decoration: line-through;'>{$userLabel}</span>";
+            $newRecord['display_name'] = "{$newRecord['display_name']} - Will no longer be connected to a user";
+            $newRecord['uf_name'] = "<span style='text-decoration: line-through;'>{$ufmatch['uf_name']}</span>";
+          }
+          // No Changes
+          if ($ufmatch['uf_name'] == $changes['uf_name'] && $ufmatch['uf_id'] == $changes['uf_id'] && $ufmatch['contact_id'] == $changes['contact_id']) {
+            CRM_Core_Session::setStatus(E::ts('No changes will be made by submitting this form.'), E::ts('No Changes Found'), 'no-popup');
+          }
+        }
+      }
+      $contactsThatWillBeChanged[] = $newRecord;
+    }
+
+    return $consequences;
+  }
+
   public function getContactsThatWillBeChanged($changes) {
     $contactsThatWillBeChanged = $existingRecords = [];
     // TODO get all contacts that will be effected and display them to the user
@@ -121,7 +177,10 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
 
       foreach ($existingRecords as $key => $ufmatch) {
         if ($ufmatch['contact_id'] != $changes['contact_id'] && $ufmatch['uf_id'] == $changes['uf_id']) {
-          $contactsThatWillBeChanged[] = self::formatContactForDisplay($ufmatch, $changes);
+          $contactsThatWillBeChanged[] = self::formatContactForDisplay($ufmatch, $changes, 'orphanedContact');
+        }
+        if ($ufmatch['contact_id'] == $changes['contact_id'] && $ufmatch['uf_id'] != $changes['uf_id']) {
+          $contactsThatWillBeChanged[] = self::formatContactForDisplay($ufmatch, $changes, 'orphanedUser');
         }
       }
 
@@ -157,7 +216,7 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     return $contactsThatWillBeChanged;
   }
 
-  public function formatContactForDisplay($contactDetailsToDisplay, $changes = []) {
+  public function formatContactForDisplay($contactDetailsToDisplay, $changes = [], $context = '') {
     $contactDetails = CRM_Usermover_Form_UserMover::apiShortCut('Contact', 'getsingle', ['id' => $contactDetailsToDisplay['contact_id']]);
     $contactURL = CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$contactDetailsToDisplay['contact_id']}");
     $detailsToDisplay = [
@@ -171,9 +230,16 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     if (!empty($user['label'])) {
       // If user is being changed display with a line thru it + add help text
       if (!empty($changes)) {
-        $detailsToDisplay['display_name'] = "{$detailsToDisplay['display_name']} - Will no longer be connected to a user";
-        $detailsToDisplay['user'] = "<span style='text-decoration: line-through;'>{$user['label']}</span>";
+        if ($context == 'orphanedContact') {
+          $detailsToDisplay['display_name'] = "{$detailsToDisplay['display_name']} - Will no longer be connected to a user";
+          $detailsToDisplay['user'] = "<span style='text-decoration: line-through;'>{$user['label']}</span>";
+        }
+        if ($context == 'orphanedUser') {
+          $detailsToDisplay['display_name'] = "<span style='text-decoration: line-through;'>{$detailsToDisplay['display_name']}</span> - Will no longer be connected to a CiviCRM Contact";
+          $detailsToDisplay['user'] = $user['label'];
+        }
       }
+
       // If user is not being changed then dont cross out user
       else {
         $detailsToDisplay['user'] = $user['label'];

@@ -18,7 +18,7 @@
   </div>
 
 {* FOOTER *}
-<table>
+{* <table>
   <thead>
         <tr>
             <th>The CiviCRM Contact will be connected to</th>
@@ -35,7 +35,13 @@
        </tr>
       {/foreach}
    </tbody>
-</table>
+</table> *}
+
+{foreach from=$consequences item=contact}
+  <div class="crm-section">
+    {$contact}
+  </div>
+{/foreach}
 <div class="crm-submit-buttons">
 {include file="CRM/common/formButtons.tpl" location="bottom"}
 </div>
