@@ -223,9 +223,11 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
    * @return void
    */
   function alterRow(&$row) {
-    $label = $row['user_id'];
-    $users = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'Get', ['pretty_print' => 1]);
+    $userLabel = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'getsingle', [
+      'pretty_print' => 1,
+      'uf_id' => $row['user_id'],
+    ]);
     $href = CRM_Core_Config::singleton()->userSystem->getUserRecordUrl($row['contact_id']);
-    $row['user_id'] = "<a href=$href>{$users['values'][$row['user_id']]}</a>";
+    $row['user_id'] = "<a href=$href>{$userLabel}</a>";
   }
 }

@@ -41,11 +41,8 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     // export form elements to post process
     $this->assign('elementNames', $this->getRenderableElementNames());
 
-    // Get available user options
-    $userOptions = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'Get', ['pretty_print' => 1]);
-
     // Get contacts that will be changed to display
-    $contactsThatWillBeChanged = self::getContactsThatWillBeChanged($defaults, $userOptions['values']);
+    $contactsThatWillBeChanged = self::getContactsThatWillBeChanged($defaults);
     $this->assign('contacts', $contactsThatWillBeChanged);
 
     parent::buildQuickForm();
@@ -112,19 +109,19 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
   }
 
 
-  public function getContactsThatWillBeChanged($changes, $users) {
+  public function getContactsThatWillBeChanged($changes) {
     $contactsThatWillBeChanged = $existingRecords = [];
     // TODO get all contacts that will be effected and display them to the user
     if (!empty($changes['contact_id'])) {
 
       // First format the submitted changes for display -> This is the record that will be created
-      $newRecord = self::formatContactForDisplay($changes, $users);
+      $newRecord = self::formatContactForDisplay($changes);
 
       $existingRecords = self::findContactsThatWillBeDeleted($changes);
 
       foreach ($existingRecords as $key => $ufmatch) {
         if ($ufmatch['contact_id'] != $changes['contact_id'] && $ufmatch['uf_id'] == $changes['uf_id']) {
-          $contactsThatWillBeChanged[] = self::formatContactForDisplay($ufmatch, $users, $changes);
+          $contactsThatWillBeChanged[] = self::formatContactForDisplay($ufmatch, $changes);
         }
       }
 
@@ -137,8 +134,15 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
           }
           // Removing a user connection
           if (empty($changes['uf_id'])) {
+            $user = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'getsingle', ['id' => $ufmatch['uf_id']]);
+            if (!empty($user['label'])) {
+              $userLabel = $user['label'];
+            }
+            else {
+              $userLabel = $ufmatch['uf_id'];
+            }
+            $newRecord['user'] = "<span style='text-decoration: line-through;'>{$userLabel}</span>";
             $newRecord['display_name'] = "{$newRecord['display_name']} - Will no longer be connected to a user";
-            $newRecord['user'] = "<span style='text-decoration: line-through;'>{$users[$ufmatch['uf_id']]}</span>";
             $newRecord['uf_name'] = "<span style='text-decoration: line-through;'>{$ufmatch['uf_name']}</span>";
           }
           // No Changes
@@ -153,7 +157,7 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     return $contactsThatWillBeChanged;
   }
 
-  public function formatContactForDisplay($contactDetailsToDisplay, $users, $changes = []) {
+  public function formatContactForDisplay($contactDetailsToDisplay, $changes = []) {
     $contactDetails = CRM_Usermover_Form_UserMover::apiShortCut('Contact', 'getsingle', ['id' => $contactDetailsToDisplay['contact_id']]);
     $contactURL = CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$contactDetailsToDisplay['contact_id']}");
     $detailsToDisplay = [
@@ -161,13 +165,18 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
       'user' => 'None ',
       'uf_name' => 'Not Applicable ',
     ];
-    if (!empty($users[$contactDetailsToDisplay['uf_id']]) && !empty($contactDetailsToDisplay['uf_id'])) {
+    $user = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'getsingle', ['id' => $contactDetailsToDisplay['uf_id']]);
+
+    // if label found for user
+    if (!empty($user['label'])) {
+      // If user is being changed display with a line thru it + add help text
       if (!empty($changes)) {
         $detailsToDisplay['display_name'] = "{$detailsToDisplay['display_name']} - Will no longer be connected to a user";
-        $detailsToDisplay['user'] = "<span style='text-decoration: line-through;'>{$users[$contactDetailsToDisplay['uf_id']]}</span>";
+        $detailsToDisplay['user'] = "<span style='text-decoration: line-through;'>{$user['label']}</span>";
       }
+      // If user is not being changed then dont cross out user
       else {
-        $detailsToDisplay['user'] = $users[$contactDetailsToDisplay['uf_id']];
+        $detailsToDisplay['user'] = $user['label'];
       }
       if (!empty($contactDetailsToDisplay['uf_name'])) {
         if (!empty($changes)) {
