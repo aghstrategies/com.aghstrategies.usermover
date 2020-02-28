@@ -11,6 +11,8 @@ use CRM_Usermover_ExtensionUtil as E;
  * @throws API_Exception
  */
 function civicrm_api3_usermover_Getallusers($params) {
+  // TODO move to get (instead of getallusers)
+  // TODO add search by uf_id
   $config = CRM_Core_Config::singleton();
   $userOptions = getAvailableUsers();
   $usersToReturn = [];
