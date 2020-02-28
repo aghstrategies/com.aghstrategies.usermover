@@ -17,7 +17,7 @@ function civicrm_api3_usermover_Getallusers($params) {
     $allUsers = get_users();
     foreach ($allUsers as $key => $userInfo) {
       if (!empty($params['user_login'])) {
-        if (strpos($params['user_login'], $userInfo->data->user_login) !== FALSE || $userInfo->data->ID == $params['user_login']) {
+        if (stripos($userInfo->data->user_login, $params['user_login']) !== FALSE || $userInfo->data->ID == $params['user_login']) {
           $userOptions[$userInfo->data->ID] = "{$userInfo->data->ID} / {$userInfo->data->user_login}";
         }
       }

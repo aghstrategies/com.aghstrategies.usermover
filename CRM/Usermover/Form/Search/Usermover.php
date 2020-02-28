@@ -179,12 +179,16 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
           // TODO get search to work by id or user name
           case 'user_id':
             $userInfo = CRM_Usermover_Form_UserMover::apiShortCut('Usermover', 'Getallusers', ['user_login' => $field]);
+            // print_r($userInfo); die();
             $usersThatFitSearch = [];
-            foreach ($userInfo as $key => $value) {
+            foreach ($userInfo['values'] as $key => $value) {
               $usersThatFitSearch[] = $key;
             }
-            $params[$fieldDetails['param']] = array($usersThatFitSearch, 'Array');
-            $clause[] = $fieldDetails['clause'];
+            if (!empty($usersThatFitSearch)) {
+              $userIdsWeCareAbout = implode(', ', $usersThatFitSearch);
+              $clause[] =  "civicrm_uf_match.uf_id IN ($userIdsWeCareAbout)";
+            }
+
             break;
 
           default:
