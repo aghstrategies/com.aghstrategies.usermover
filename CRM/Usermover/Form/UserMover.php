@@ -74,7 +74,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       'placeholder' => "- No User -",
     ]);
 
-    $this->add('checkbox', 'uf_name', ts('Copy the user email address to the CiviCRM contact if it is not already there.'));
+    $this->add('checkbox', 'copy_email', ts('Copy the user email address to the CiviCRM contact if it is not already there.'));
 
     $this->addButtons(array(
       array(
@@ -115,6 +115,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       'uf_id' => $values['uf_id'],
       'uf_name' => $values['uf_name'],
       'contact_id' => $values['contact_id'],
+      'copy_email' => $values['copy_email'],
     ];
     CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/usermover/confirm', $valuesToConfirm));
   }

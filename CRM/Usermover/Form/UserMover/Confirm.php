@@ -9,26 +9,38 @@ use CRM_Usermover_ExtensionUtil as E;
  */
 class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
   public function buildQuickForm() {
-    $defaults = [];
+    $defaults = [
+      'contact_id' => NULL,
+      'uf_name' => NULL,
+      'uf_id' => NULL,
+      'copy_email' => 0,
+    ];
 
     $urlParams = [
       'contact_id',
       'uf_name',
       'uf_id',
+      'copy_email',
     ];
 
     // Set defaults based on values in url
     foreach ($urlParams as $key => $field) {
       if (isset($_GET[$field])) {
         $defaults[$field] = $_GET[$field];
-        // $this->addElement('hidden', $field, $defaults[$field], ['id' => $field]);
       }
     }
+
+    // First format the submitted changes for display -> This is the record that will be created
+    $recordToBeCreated = self::formatContactForDisplay($defaults);
+
+    // Get contacts that will be changed to display
+    $consequences = self::getConsequencesOfThisAction($defaults, $recordToBeCreated);
 
     // Add url values to form so you can get them in postprocess
     $this->addElement('hidden','contact_id', $defaults['contact_id'], array('id'=> 'contact_id'));
     $this->addElement('hidden','uf_id', $defaults['uf_id'], array('id'=> 'uf_id'));
-    $this->addElement('hidden','uf_name', $defaults['uf_name'], array('id'=> 'uf_name'));
+    $this->addElement('hidden','uf_name', $recordToBeCreated['uf_name'], array('id'=> 'uf_name'));
+    $this->addElement('hidden','copy_email', $defaults['copy_email'], array('id'=> 'copy_email'));
 
     $this->addButtons(array(
       array(
@@ -40,9 +52,6 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
 
     // export form elements to post process
     $this->assign('elementNames', $this->getRenderableElementNames());
-
-    // Get contacts that will be changed to display
-    $consequences = self::getConsequencesOfThisAction($defaults);
 
     $this->assign('consequences', $consequences);
     parent::buildQuickForm();
@@ -68,6 +77,13 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
         'uf_name' => $values['uf_name'],
         'contact_id' => $values['contact_id'],
       ]);
+
+      if ($values['copy_email'] == 1) {
+        CRM_Usermover_Form_UserMover::apiShortCut('Email', 'create', [
+          'email' => $values['uf_name'],
+          'contact_id' => $values['contact_id'],
+        ]);
+      }
 
       if ($result['is_error'] == 0) {
         CRM_Core_Session::setStatus(E::ts('User id <a href="%4">%1</a> is now connected to <a href="%3">contact id %2</a>', array(
@@ -109,17 +125,33 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
   }
 
 
-  public function getConsequencesOfThisAction($changes) {
+  public function getConsequencesOfThisAction(&$changes, $recordToBeCreated) {
     $consequences = $existingRecords = [];
 
     $existingRecords = self::findContactsThatWillBeDeleted($changes);
 
-    // First format the submitted changes for display -> This is the record that will be created
-    $recordToBeCreated = self::formatContactForDisplay($changes);
-
     // If creating a new connection print consequences
     if (!empty($changes['uf_id'])) {
       $consequences[] = "CiviCRM Contact {$recordToBeCreated['display_name']} will be connected to user {$recordToBeCreated['user']} ";
+
+      // If copy email address is checked display the consequences
+      if ($changes['copy_email'] == 1) {
+        $recordToBeCreated['uf_name'];
+        // Check if the email connected to the user exists on this contact
+        $emailGet = CRM_Usermover_Form_UserMover::apiShortCut('Email', 'get', [
+          'contact_id' => $changes['contact_id'],
+          'email' => $recordToBeCreated['uf_name'],
+        ]);
+        if ($emailGet['is_error'] == 0) {
+          if (empty($emailGet['values'])) {
+            $consequences[] = "The email address on the user {$recordToBeCreated['user']} '{$recordToBeCreated['uf_name']}' will be added to the CiviCRM Contact {$recordToBeCreated['display_name']}.";
+          }
+          else {
+            $changes['copy_email'] = 0;
+            $consequences[] = "The email address on the user {$recordToBeCreated['user']} '{$recordToBeCreated['uf_name']}' is already on the CiviCRM Contact {$recordToBeCreated['display_name']} so no email address will be added.";
+          }
+        }
+      }
 
       // If there are existing records with this contact id and or user id print information on how they will be altered
       if (count($existingRecords) > 0) {
@@ -174,6 +206,7 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     // if label found for user
     if (!empty($user['label'])) {
       $detailsToDisplay['user'] = "<a href={$user['user_url']}>{$user['label']}</a>";
+      $detailsToDisplay['uf_name'] = $user['uf_name'];
     } else {
       $detailsToDisplay['user'] = '<strong>WARNING</strong> - Invalid User Selected, it is not recommended to proceed with this action.';
     }
