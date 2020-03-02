@@ -147,26 +147,31 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
     $where = "contact_a.id IS NOT NULL AND civicrm_uf_match.uf_id IS NOT NULL";
 
     $clause = array();
+    $currentDomain = CRM_Usermover_Form_UserMover::apiShortCut('Domain', 'getsingle', []);
+    if (!empty($currentDomain['id'])) {
+      $clause[] = "civicrm_uf_match.domain_id = %1";
+      $params[1] = array($currentDomain['id'], 'String');
+    }
     $searchCriteria = [
       'name' => [
           'sql' => 'contact_name',
-          'param' => 1,
-          'clause' => "contact_a.display_name LIKE %1"
+          'param' => 2,
+          'clause' => "contact_a.display_name LIKE %2"
       ],
       'email' => [
         'sql' => 'email',
-        'param' => 2,
-        'clause' => "civicrm_email.email LIKE %2"
+        'param' => 3,
+        'clause' => "civicrm_email.email LIKE %3"
       ],
       'user_id' => [
         'sql' => 'user_id',
-        'param' => 3,
-        'clause' => "civicrm_uf_match.uf_id IN %3"
+        'param' => 4,
+        'clause' => "civicrm_uf_match.uf_id IN %4"
       ],
       'uf_name' => [
         'sql' => 'uf_name',
-        'param' => 4,
-        'clause' => "civicrm_uf_match.uf_name LIKE %4"
+        'param' => 5,
+        'clause' => "civicrm_uf_match.uf_name LIKE %5"
       ],
     ];
 
