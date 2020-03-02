@@ -104,6 +104,7 @@ function getAvailableUsers() {
         'user_login' => $userInfo->data->user_login,
         'uf_name' => $userInfo->data->user_email,
         'label' => "{$userInfo->data->ID} ({$userInfo->data->user_login})",
+        'user_url' => $config->userFrameworkBaseURL . "wp-admin/user-edit.php?user_id=" . $userInfo->data->ID,
       ];
     }
   }
