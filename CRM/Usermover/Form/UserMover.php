@@ -43,7 +43,6 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       if (!empty($existingRecord['contact_id'])) {
         $defaults['contact_id'] = $existingRecord['contact_id'];
         $defaults['uf_id'] = $existingRecord['uf_id'];
-        $defaults['uf_name'] = $existingRecord['uf_name'];
       }
     }
     if (empty($defaults['contact_id'])) {
@@ -75,7 +74,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       'placeholder' => "- No User -",
     ]);
 
-    $this->add('text', 'uf_name', ts('Unique Identifier in the CMS'));
+    $this->add('checkbox', 'uf_name', ts('Copy the user email address to the CiviCRM contact if it is not already there.'));
 
     $this->addButtons(array(
       array(

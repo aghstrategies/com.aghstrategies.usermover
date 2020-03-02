@@ -1,8 +1,5 @@
 CRM.$(function ($) {
 
-  // Add required star to uf_name field
-  $('label[for="uf_name"]').append('<span class="crm-marker" title="This field is required."> *</span>');
-
   // Only display user name field if an id has been selected for uf_id
   var cmsUserSelected = function() {
 

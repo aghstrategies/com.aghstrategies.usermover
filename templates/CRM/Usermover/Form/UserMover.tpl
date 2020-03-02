@@ -6,6 +6,9 @@
   <div class="crm-section">
     <div class="label">{$form.$elementName.label}</div>
     <div class="content">{$form.$elementName.html}</div>
+    {if $elementName == 'uf_name'}
+      {help id="uf-name-text" tplFile=$tplFile file="CRM/Usermover/Form/UserMover.hlp"}
+    {/if}
     <div class="clear"></div>
   </div>
 {/foreach}
