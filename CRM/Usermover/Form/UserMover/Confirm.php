@@ -161,7 +161,7 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     return $consequences;
   }
 
-  public function formatContactForDisplay($contactDetailsToDisplay, $changes = [], $context = '') {
+  public function formatContactForDisplay($contactDetailsToDisplay) {
     $contactDetails = CRM_Usermover_Form_UserMover::apiShortCut('Contact', 'getsingle', ['id' => $contactDetailsToDisplay['contact_id']]);
     $contactURL = CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$contactDetailsToDisplay['contact_id']}");
     $detailsToDisplay = [
@@ -174,30 +174,6 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     // if label found for user
     if (!empty($user['label'])) {
       $detailsToDisplay['user'] = "<a href={$user['user_url']}>{$user['label']}</a>";
-      // If user is being changed display with a line thru it + add help text
-      if (!empty($changes)) {
-        if ($context == 'orphanedContact') {
-          $detailsToDisplay['display_name'] = "{$detailsToDisplay['display_name']} - Will no longer be connected to a user";
-          $detailsToDisplay['user'] = "<span style='text-decoration: line-through;'>{$user['label']}</span>";
-        }
-        if ($context == 'orphanedUser') {
-          $detailsToDisplay['display_name'] = "<span style='text-decoration: line-through;'>{$detailsToDisplay['display_name']}</span> - Will no longer be connected to a CiviCRM Contact";
-          $detailsToDisplay['user'] = $user['label'];
-        }
-      }
-
-      // If user is not being changed then dont cross out user
-      else {
-        $detailsToDisplay['user'] = "<a href={$user['user_url']}>{$user['label']}</a>";
-      }
-      if (!empty($contactDetailsToDisplay['uf_name'])) {
-        if (!empty($changes)) {
-          $detailsToDisplay['uf_name'] = "<span style='text-decoration: line-through;'>{$contactDetailsToDisplay['uf_name']}</span>";
-
-        } else {
-          $detailsToDisplay['uf_name'] = $contactDetailsToDisplay['uf_name'];
-        }
-      }
     } else {
       $detailsToDisplay['user'] = '<strong>WARNING</strong> - Invalid User Selected, it is not recommended to proceed with this action.';
     }
