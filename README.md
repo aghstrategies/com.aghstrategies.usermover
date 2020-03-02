@@ -31,4 +31,3 @@ On Submit of the form you will receive a success message if everything went as e
 3. Add link to user land
 4. Debug using entityref for custom usermover entity (getlist) cant get it to default.
 6. Improve help text regarding the uf_name on the user mover page to be dependent on the combo selected (dont suggest copying the email to the contact UNLESS its not there...)
-7. Validate the uf_name on submit of the user mover form.
