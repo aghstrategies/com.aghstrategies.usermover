@@ -31,26 +31,29 @@ function usermover_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &
  */
 function usermover_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
   if ($formName == 'CRM_Usermover_Form_UserMover') {
-    // TODO Check that the uf_name is legit before allowing the user to continue.
-    // if (!empty($form->_submitValues['uf_id'])) {
-    //   // Ensure UF Name is set
-    //   if (!empty($form->_submitValues['uf_name'])) {
-    //     $ufMatches = CRM_Usermover_Form_UserMover::apiShortCut('UFMatch', 'get', ['uf_name' => $form->_submitValues['uf_name']]);
-    //     if (!empty($ufMatches['values'])) {
-    //       foreach ($ufMatches['values'] as $key => $ufDetails) {
-    //         if ($ufDetails['uf_id'] == $form->_submitValues['uf_id']) {
-    //           unset($ufMatches['values'][$key]);
-    //         }
-    //         if ($ufDetails['contact_id'] == $form->_submitValues['contact_id']) {
-    //           unset($ufMatches['values'][$key]);
-    //         }
-    //       }
-    //       if (count($ufMatches['values']) > 0) {
-    //         $form->setElementError('uf_name', '"Unique Identifier in the CMS" is not unique... there is another record in the system using this UF_Name');
-    //       }
-    //     }
-    //   }
-    // }
+    // Check that the uf_name is legit before allowing the user to continue.
+    if (!empty($form->_submitValues['uf_id'])) {
+
+      // Get email associated with the user
+      $recordToBeCreated = CRM_Usermover_Form_UserMover_Confirm::formatContactForDisplay($form->_submitValues);
+
+      // check that this uf_name is unique
+      $ufMatches = CRM_Usermover_Form_UserMover::apiShortCut('UFMatch', 'get', ['uf_name' => $recordToBeCreated['uf_name']]);
+      if (!empty($ufMatches['values'])) {
+        foreach ($ufMatches['values'] as $key => $ufDetails) {
+          if ($ufDetails['uf_id'] == $form->_submitValues['uf_id']) {
+            unset($ufMatches['values'][$key]);
+          }
+          if ($ufDetails['contact_id'] == $form->_submitValues['contact_id']) {
+            unset($ufMatches['values'][$key]);
+          }
+        }
+        if (count($ufMatches['values']) > 0) {
+          $form->setElementError('uf_name', '"Unique Identifier in the CMS" is not unique... there is another record in the system using this UF_Name');
+        }
+      }
+
+    }
   }
   return;
 }
