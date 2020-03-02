@@ -27,9 +27,8 @@ On Submit of the form you will receive a success message if everything went as e
 ## TODOS:
 
 1. Write get all users for drupal and joomla
-2. Improve narrative on confirm screen
+2. Test narrative on confirm screen
 3. Add link to user land
 4. Debug using entityref for custom usermover entity (getlist) cant get it to default.
-5. Display orphaned users on confirm screen
 6. Ensure that the email address attached to the user is on the CiviCRM contact
 7. Uf_name is the unique email address. In wordpress this is the email on the user...which should be on the contact. I think we should make this field. Andrew thinks we should remove this field from the ui... but I think we should keep it and make it more helpful.. autopopulate to the email on the user... and tell users that editing this email address will result in the email address on the user being updated AND the email being added to the civicrm contact if it is not there already.
