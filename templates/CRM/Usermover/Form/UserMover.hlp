@@ -1,7 +1,7 @@
-{htxt id="uf-name-text-title"}
+{htxt id="copy-email-text-title"}
   {ts}Copy the CMS User Email to the Contact{/ts}
 {/htxt}
-{htxt id="uf-name-text"}
+{htxt id="copy-email-text"}
 <p>{ts}The user in the CMS must have a unique email (one email per CMS user). The email on the User must also be on the contact in CiviCRM.{/ts}</p>
 <p>{ts}This is something to consider when reassigning/creating users in the CMS.{/ts}</p>
 <p>{ts}You may want to edit the email address on the user BEFORE making this change.{/ts}</p>

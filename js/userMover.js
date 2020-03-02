@@ -15,9 +15,22 @@ CRM.$(function ($) {
       CRM.api3('UserMover', 'getsingle', {
         "uf_id": uf_id
       }).then(function(result) {
-        $('label[for="copy_email"]').text("Copy the user email address (" + result.uf_name + ") to the CiviCRM contact if it is not already there.");
+        $('label[for="copy_email"]').text("The email address associated with this user (" + result.uf_name + ") does not exist on this contact. Check this box to copy this email address to the CiviCRM Contact.");
+        CRM.api3('Email', 'get', {
+          "contact_id": contact_id,
+          "email": result.uf_name
+        }).then(function(result) {
+          if (result.is_error == 0) {
+            if (result.count > 0) {
+              $('input#copy_email').parent().parent().hide();
+              $('input#copy_email').val('');
+            }
+          }
+        }, function(error) {
+          console.log(error);
+        });
       }, function(error) {
-        // oops
+        console.log(error);
       });
 
       $('input#copy_email').parent().parent().show();
