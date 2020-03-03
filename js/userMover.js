@@ -15,7 +15,7 @@ CRM.$(function ($) {
       CRM.api3('UserMover', 'getsingle', {
         "uf_id": uf_id
       }).then(function(result) {
-        $('label[for="copy_email"]').text("The email address associated with this user (" + result.uf_name + ") does not exist on this contact. Check this box to copy this email address to the CiviCRM Contact.");
+        $('label[for="copy_email"]').text("The email address associated with this user (" + result.uf_name + ") does not exist on the selected contact. Check this box to copy this email address to the CiviCRM Contact.");
         CRM.api3('Email', 'get', {
           "contact_id": contact_id,
           "email": result.uf_name
