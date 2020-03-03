@@ -127,14 +127,20 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
   }
 
   public function linkToUserLand() {
-    // TODO add drupal and joomla
     $config = CRM_Core_Config::singleton();
     $url = NULL;
+
+    // WordPress
     if ($config->userSystem->is_wordpress) {
       $url = $config->userFrameworkBaseURL . "wp-admin/users.php";
     }
+    // Drupal and Backdrop
     elseif ($config->userSystem->is_drupal) {
       $url = $config->userFrameworkBaseURL . "admin/people";
+    }
+    // joomla
+    elseif (get_class($config->userSystem) == 'CRM_Utils_System_Joomla') {
+      $url = $config->userFrameworkBaseURL . "administrator/index.php?option=com_users&view=users";
     }
     return $url;
   }

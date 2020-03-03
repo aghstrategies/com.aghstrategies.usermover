@@ -93,7 +93,7 @@ function civicrm_api3_user_mover_Get($params) {
 function getAvailableUsers() {
   $userOptions = [];
   $config = CRM_Core_Config::singleton();
-  
+
   // Wordpress
   if ($config->userSystem->is_wordpress) {
     $allUsers = get_users();
@@ -131,7 +131,7 @@ function getAvailableUsers() {
         'user_login' => $userInfo->name,
         'uf_name' => $userInfo->email,
         'label' => "{$userInfo->id} ({$userInfo->name})",
-        'user_url' => $config->userFrameworkBaseURL . "user/" . $userInfo->id,
+        'user_url' => $config->userFrameworkBaseURL . "administrator/index.php?option=com_users&view=user&layout=edit&id=" . $userInfo->id,
       ];
     }
 
