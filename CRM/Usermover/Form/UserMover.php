@@ -140,7 +140,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     }
     // joomla
     elseif (get_class($config->userSystem) == 'CRM_Utils_System_Joomla') {
-      $url = $config->userFrameworkBaseURL . "administrator/index.php?option=com_users&view=users";
+      $url = $config->userFrameworkBaseURL . "index.php?option=com_users&view=users";
     }
     return $url;
   }
