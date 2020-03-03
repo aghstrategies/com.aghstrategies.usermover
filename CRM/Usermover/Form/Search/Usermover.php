@@ -187,7 +187,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
         switch ($fieldDetails['sql']) {
           // TODO get search to work by id or user name
           case 'user_id':
-            $userInfo = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'Get', ['user_login' => $field]);
+            $userInfo = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'Get', ['label' => $field]);
             // print_r($userInfo); die();
             $usersThatFitSearch = [];
             foreach ($userInfo['values'] as $key => $value) {

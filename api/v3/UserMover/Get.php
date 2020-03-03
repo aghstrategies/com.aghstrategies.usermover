@@ -52,18 +52,24 @@ function civicrm_api3_user_mover_Get($params) {
   $config = CRM_Core_Config::singleton();
   $userOptions = getAvailableUsers();
   $usersToReturn = [];
-
-  // If searching for user by id
+  $id = 0;
   if (!empty($params['uf_id'])) {
-    if (!empty($userOptions[$params['uf_id']])) {
-      $usersToReturn[$params['uf_id']] = $userOptions[$params['uf_id']];
+    $id = $params['uf_id'];
+  }
+  if (!empty($params['id'])) {
+    $id = $params['id'];
+  }
+  // If searching for user by id
+  if ($id > 0) {
+    if (!empty($userOptions[$id])) {
+      $usersToReturn[$id] = $userOptions[$id];
     }
   }
 
-  // If searching by user_login (could be id or username)
-  elseif (!empty($params['user_login'])) {
+  // If searching by label (could be id or username)
+  elseif (!empty($params['label'])) {
     foreach ($userOptions as $id => $userInfo) {
-      if (stripos($userInfo['user_login'], $params['user_login']) !== FALSE || $id == $params['user_login']) {
+      if (stripos($userInfo['label'], $params['label']) !== FALSE || $id == $params['label']) {
         $usersToReturn[$userInfo['id']] = $userInfo;
       }
     }
@@ -162,27 +168,23 @@ function _civicrm_api3_user_mover_getlist_defaults($request) {
   ];
 }
 
-// function _civicrm_api3_user_mover_getlist_output($result, $request) {
-//   $data = [];
-//     if (!empty($result['values'])) {
-//       foreach ($result['values'] as $row) {
-//         $data[$row[$request['id_field']]] = array(
-//           'id' => $row[$request['id_field']],
-//           'label' => $row[$request['label_field']],
-//         );
-//       }
-//     }
-//     return $data;
-// }
-
-/**
- * Get usermover list parameters.
- *
- * @see _civicrm_api3_generic_getlist_params
- *
- * @param array $request
- */
-function _civicrm_api3_user_mover_getlist_params(&$request) {
-  $fieldsToReturn = ['id', 'label'];
-  $request['params']['return'] = array_unique(array_merge($fieldsToReturn, $request['extra']));
+function _civicrm_api3_user_mover_getlist_output($result, $request) {
+  $data = [];
+  $searchParams = [];
+  if (!empty($request['input'])) {
+    $searchParams['label'] = $request['input'];
+  }
+  if (!empty($request['id'][0])) {
+    $searchParams['id'] = $request['id'][0];
+  }
+  $allUsers = civicrm_api3_user_mover_Get($searchParams);
+  if (!empty($allUsers['values'])) {
+    foreach ($allUsers['values'] as $row) {
+      $data[$row[$request['id_field']]] = array(
+        'id' => $row[$request['id_field']],
+        'label' => $row[$request['label_field']],
+      );
+    }
+  }
+  return $data;
 }
