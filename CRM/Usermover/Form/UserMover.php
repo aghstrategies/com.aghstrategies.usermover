@@ -29,10 +29,14 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       'return' => 'value',
     ]);
     $url = self::getUrlForSearch();
+    $userLand = CRM_Usermover_Form_UserMover::linkToUserLand();
+
     if ($url) {
-      CRM_Core_Session::setStatus(E::ts('Search for Connected Users using the <a href="%1">Search For CMS Users</a> form.', array(
+      CRM_Core_Session::setStatus(E::ts('<p>Search for Connected Users using the <a href="%1">Search For CMS Users</a> form.</p>
+      <p>To create a new CMS user or edit an existing user go to the <a href="%2">CMS User Administration Page</a>.</p>', array(
         1 => $url,
-      )), E::ts('Need to Search?'), 'no-popup');
+        2 => $userLand,
+      )), E::ts('Helpful Links'), 'no-popup');
     }
 
     CRM_Core_Resources::singleton()->addScriptFile('com.aghstrategies.usermover', 'js/userMover.js');

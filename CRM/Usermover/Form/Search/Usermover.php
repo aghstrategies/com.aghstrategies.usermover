@@ -22,7 +22,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
     // Add help text for users trying to create a new connection
     CRM_Core_Session::setStatus(E::ts(
       '<p>To connect a CMS user to a CiviCRM Contact visit the <a href="%1">Edit CMS User Connection</a> form.</p>
-      <p>To create a new CMS user or edit an existing user go to <a href="%2">CMS User Administration Page</a>.</p>', array(
+       <p>To create a new CMS user or edit an existing user go to <a href="%2">CMS User Administration Page</a>.</p>', array(
       1 => CRM_Utils_System::url('civicrm/usermover'),
       2 => $userLand,
     )), E::ts('New User Connections'), 'no-popup');
