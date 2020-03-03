@@ -75,7 +75,7 @@ function civicrm_api3_user_mover_Get($params) {
   }
 
   // If pretty_print reformat results id => "id / name"
-  if (!empty($usersToReturn) && $params['pretty_print'] == 1) {
+  if (!empty($usersToReturn) && isset($params['pretty_print']) && $params['pretty_print'] == 1) {
     foreach ($usersToReturn as $id => $details) {
       $usersToReturn[$id] = $details['label'];
     }
@@ -93,7 +93,7 @@ function civicrm_api3_user_mover_Get($params) {
 function getAvailableUsers() {
   $userOptions = [];
   $config = CRM_Core_Config::singleton();
-
+  
   // Wordpress
   if ($config->userSystem->is_wordpress) {
     $allUsers = get_users();
@@ -108,9 +108,36 @@ function getAvailableUsers() {
       ];
     }
   }
+  // Joomla
+  elseif (get_class($config->userSystem) == 'CRM_Utils_System_Joomla') {
+    $id = 'id';
+    $mail = 'email';
+    $name = 'name';
 
+    $JUserTable = JTable::getInstance('User', 'JTable');
+
+    $db = $JUserTable->getDbo();
+    $query = $db->getQuery(TRUE);
+    $query->select($id . ', ' . $mail . ', ' . $name);
+    $query->from($JUserTable->getTableName());
+    $query->where($mail != '');
+
+    $db->setQuery($query);
+    $allUsers = $db->loadObjectList();
+    foreach ($allUsers as $userInfo) {
+      $userOptions[$userInfo->id] = [
+        'id' => $userInfo->id,
+        'uf_id' => $userInfo->id,
+        'user_login' => $userInfo->name,
+        'uf_name' => $userInfo->email,
+        'label' => "{$userInfo->id} ({$userInfo->name})",
+        'user_url' => $config->userFrameworkBaseURL . "user/" . $userInfo->id,
+      ];
+    }
+
+  }
   // Drupal or Backdrop
-  elseif ($config->userSystem->is_drupal || $config->userSystem->is_backdrop) {
+  elseif ($config->userSystem->is_drupal) {
     $allUsers = db_query("SELECT uid, mail, name FROM {users} where mail != ''");
     foreach ($allUsers as $userInfo) {
       $userOptions[$userInfo->uid] = [
@@ -123,7 +150,6 @@ function getAvailableUsers() {
       ];
     }
   }
-  // TODO Joomla
 
   return $userOptions;
 }
