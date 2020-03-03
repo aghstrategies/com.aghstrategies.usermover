@@ -26,6 +26,5 @@ On Submit of the form you will receive a success message if everything went as e
 
 ## TODOS:
 
-1. Debug using entityref for custom usermover entity (getlist) -- cant get it to default.
-2. Move confirm code to js and get rid of the confirm page
-3. Update documentation
+1. Move confirm code to js and get rid of the confirm page
+2. Update documentation
