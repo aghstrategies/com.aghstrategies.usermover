@@ -1,6 +1,10 @@
 {* HEADER *}
 
 {* FIELD EXAMPLE: OPTION 1 (AUTOMATIC LAYOUT) *}
+<p>Search for Connected Users using the <a href="{$searchUrl}">Search For CMS Users</a> form.</p>
+
+{$userLand}
+
 <div class='userMoverHelp help crm-message'></div>
 {foreach from=$elementNames item=elementName}
   <div class="crm-section">

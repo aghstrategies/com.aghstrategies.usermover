@@ -28,16 +28,19 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       'name' => "CRM_Usermover_Form_Search_Usermover",
       'return' => 'value',
     ]);
-    $url = self::getUrlForSearch();
-    $userLand = CRM_Usermover_Form_UserMover::linkToUserLand();
+    $searchUrl = self::getUrlForSearch();
+    $this->assign('searchUrl', $searchUrl);
 
-    if ($url) {
-      CRM_Core_Session::setStatus(E::ts('<p>Search for Connected Users using the <a href="%1">Search For CMS Users</a> form.</p>
-      <p>To create a new CMS user or edit an existing user go to the <a href="%2">CMS User Administration Page</a>.</p>', array(
-        1 => $url,
-        2 => $userLand,
-      )), E::ts('Helpful Links'), 'no-popup');
+    $userUrl = CRM_Usermover_Form_UserMover::linkToUserLand();
+    $userLand = '';
+    if ($userUrl) {
+      $userLand = "<p>To create a new CMS user or edit an existing user go to the <a href='$userUrl'>CMS User Administration Page</a>.</p>";
+    } else {
+      CRM_Core_Session::setStatus(E::ts(
+        'No valid url to user land found. This extension only works for Drupal and Wordpress at this time.
+        Perhaps you are using a differnt CMS. Proceed with caution.'), E::ts('CMS Compatibility'), 'error');
     }
+    $this->assign('userLand', $userLand);
 
     CRM_Core_Resources::singleton()->addScriptFile('com.aghstrategies.usermover', 'js/userMover.js');
 
@@ -91,7 +94,6 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
-
     parent::buildQuickForm();
   }
 
