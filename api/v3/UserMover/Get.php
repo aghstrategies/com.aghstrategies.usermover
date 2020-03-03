@@ -109,25 +109,21 @@ function getAvailableUsers() {
     }
   }
 
-  // Drupal
-  elseif ($config->userSystem->is_drupal) {
-    $allUsers = entity_load('user');
-    foreach ($allUsers as $key => $userInfo) {
-      if ($userInfo->uid > 0) {
-        $userOptions[$userInfo->uid] = [
-          'id' => $userInfo->uid,
-          'uf_id' => $userInfo->uid,
-          'user_login' => $userInfo->name,
-          'uf_name' => $userInfo->mail,
-          'label' => "{$userInfo->uid} ({$userInfo->name})",
-          'user_url' => $config->userFrameworkBaseURL . "user/" . $userInfo->uid,
-        ];
-      }
+  // Drupal or Backdrop
+  elseif ($config->userSystem->is_drupal || $config->userSystem->is_backdrop) {
+    $allUsers = db_query("SELECT uid, mail, name FROM {users} where mail != ''");
+    foreach ($allUsers as $userInfo) {
+      $userOptions[$userInfo->uid] = [
+        'id' => $userInfo->uid,
+        'uf_id' => $userInfo->uid,
+        'user_login' => $userInfo->name,
+        'uf_name' => $userInfo->mail,
+        'label' => "{$userInfo->uid} ({$userInfo->name})",
+        'user_url' => $config->userFrameworkBaseURL . "user/" . $userInfo->uid,
+      ];
     }
   }
-
   // TODO Joomla
-  // TODO Backdrop
 
   return $userOptions;
 }
