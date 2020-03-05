@@ -2,10 +2,11 @@ CRM.$(function ($) {
 
   // Only display copy_email field if an id has been selected for uf_id
   var cmsUserSelected = function() {
+    $('input#copy_email').prop( "checked", false );
+    // $('input#copy_email').val(0);
 
     if ($('#uf_id').val() == '') {
       $('input#copy_email').parent().parent().hide();
-      $('input#copy_email').val('');
       $('.userMoverHelp').text('Submitting this form will result in removing any and all connections between the selected CiviCRM and the CMS.');
     }
     else {
@@ -23,7 +24,6 @@ CRM.$(function ($) {
           if (result.is_error == 0) {
             if (result.count > 0) {
               $('input#copy_email').parent().parent().hide();
-              $('input#copy_email').val('');
             }
           }
         }, function(error) {

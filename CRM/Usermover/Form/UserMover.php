@@ -112,6 +112,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
 
   public function postProcess() {
     $values = $this->exportValues();
+    // print_r($values); die();
     $valuesToConfirm = [
       'uf_id' => $values['uf_id'],
       'uf_name' => $values['uf_name'],
