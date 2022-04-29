@@ -194,7 +194,6 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
       );
       if ($field != NULL) {
         switch ($fieldDetails['sql']) {
-          // TODO get search to work by id or user name
           case 'user_id':
             $clause[] =  "civicrm_uf_match.uf_id = $field";
             break;
