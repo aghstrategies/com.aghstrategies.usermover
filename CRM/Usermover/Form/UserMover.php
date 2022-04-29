@@ -70,10 +70,6 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     $this->addEntityRef('uf_id', ts('to CMS User ID'), [
       'entity' => 'UserMover',
       'placeholder' => "- No User -",
-      'select' => [
-        'minimumInputLength' => 0,
-      ],
-      'api' => ['label_field' => 'label', 'search_field' => 'label'],
     ]);
 
     $this->add('checkbox', 'copy_email', ts('Copy the user email address to the CiviCRM contact if it is not already there.'));

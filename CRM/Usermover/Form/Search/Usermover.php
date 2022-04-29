@@ -187,16 +187,16 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
         switch ($fieldDetails['sql']) {
           // TODO get search to work by id or user name
           case 'user_id':
-            $userInfo = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'Get', ['label' => $field]);
+            $userInfo = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'Get', ['label' => ['LIKE' => $field]]);
             // print_r($userInfo); die();
             $usersThatFitSearch = [];
             foreach ($userInfo['values'] as $key => $value) {
               $usersThatFitSearch[] = $key;
             }
-            if (!empty($usersThatFitSearch)) {
-              $userIdsWeCareAbout = implode(', ', $usersThatFitSearch);
-              $clause[] =  "civicrm_uf_match.uf_id IN ($userIdsWeCareAbout)";
-            }
+            // if (!empty($usersThatFitSearch)) {
+            //   $userIdsWeCareAbout = implode(', ', $usersThatFitSearch);
+            //   $clause[] =  "civicrm_uf_match.uf_id IN ($userIdsWeCareAbout)";
+            // }
 
             break;
 
@@ -232,11 +232,13 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
    * @return void
    */
   function alterRow(&$row) {
-    $userLabel = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'getsingle', [
-      'pretty_print' => 1,
+    $userLabel = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'get', [
       'uf_id' => $row['user_id'],
     ]);
-    $href = CRM_Core_Config::singleton()->userSystem->getUserRecordUrl($row['contact_id']);
-    $row['user_id'] = "<a href=$href>{$userLabel}</a>";
+    if (!empty($userLabel['values'][0]['label'])) {
+      $href = CRM_Core_Config::singleton()->userSystem->getUserRecordUrl($row['contact_id']);
+      $row['user_id'] = "<a href=$href>{$userLabel['values'][0]['label']}</a>";
+    }
+
   }
 }
