@@ -180,7 +180,7 @@ function _civicrm_api3_user_mover_getlist_output($result, $request) {
   $allUsers = civicrm_api3_user_mover_Get($searchParams);
   if (!empty($allUsers['values'])) {
     foreach ($allUsers['values'] as $row) {
-      $data[$row[$request['id_field']]] = array(
+      $data[] = array(
         'id' => $row[$request['id_field']],
         'label' => $row[$request['label_field']],
       );
