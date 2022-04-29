@@ -46,6 +46,12 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
     );
 
     $form->add('text',
+      'user_name',
+      E::ts('CMS User Name'),
+      TRUE
+    );
+
+    $form->add('text',
       'uf_name',
       E::ts('CiviCRM User Unique Identifier'),
       TRUE
@@ -60,7 +66,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
      * if you are using the standard template, this array tells the template what elements
      * are part of the search criteria
      */
-    $form->assign('elements', array('contact_name', 'email', 'user_id', 'uf_name'));
+    $form->assign('elements', array('contact_name', 'email', 'user_id', 'uf_name', 'user_name'));
   }
 
   /**
@@ -177,6 +183,9 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
         'param' => 5,
         'clause' => "civicrm_uf_match.uf_name LIKE %5"
       ],
+      'user_name' => [
+        'sql' => 'user_name',
+      ],
     ];
 
     foreach ($searchCriteria as $field => $fieldDetails) {
@@ -188,6 +197,16 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
           // TODO get search to work by id or user name
           case 'user_id':
             $clause[] =  "civicrm_uf_match.uf_id = $field";
+            break;
+
+          case 'user_name':
+            $usersWeCareAbout = [];
+            $users = CRM_Usermover_Form_UserMover::apiShortCut('UserMover', 'get', ['label' => ['LIKE' => "%$field%"]]);
+            foreach ($users['values'] as $key => $userInfo) {
+              $usersWeCareAbout[] = $userInfo['uf_id'];
+            }
+            $usersWeCareAbout = implode(', ', $usersWeCareAbout);
+            $clause[] =  "civicrm_uf_match.uf_id IN ($usersWeCareAbout)";
             break;
 
           default:
