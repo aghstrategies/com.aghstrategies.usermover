@@ -9,7 +9,7 @@ use CRM_Usermover_ExtensionUtil as E;
  */
 class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
 
-  public function getUrlForSearch() {
+  public static function getUrlForSearch() {
     $url = NULL;
     $csid = self::apiShortCut('CustomSearch', 'getvalue', [
       'name' => "CRM_Usermover_Form_Search_Usermover",
@@ -88,7 +88,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     parent::buildQuickForm();
   }
 
-  public function apiShortCut($entity, $action, $params) {
+  public static function apiShortCut($entity, $action, $params) {
     try {
       $results = civicrm_api3($entity, $action, $params);
     }
@@ -118,16 +118,16 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/usermover/confirm', $valuesToConfirm));
   }
 
-  public function linkToUserLand() {
+  public static function linkToUserLand() {
     $config = CRM_Core_Config::singleton();
     $url = NULL;
 
     // WordPress
-    if ($config->userSystem->is_wordpress) {
+    if ($config->userFramework == 'WordPress') {
       $url = $config->userFrameworkBaseURL . "wp-admin/users.php";
     }
     // Drupal and Backdrop
-    elseif ($config->userSystem->is_drupal) {
+    elseif ($config->userFramework == 'Drupal' || $config->userFramework == 'Drupal8') {
       $url = $config->userFrameworkBaseURL . "admin/people";
     }
     // joomla

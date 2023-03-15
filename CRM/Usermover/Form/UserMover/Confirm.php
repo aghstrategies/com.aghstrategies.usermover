@@ -193,7 +193,7 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     return $consequences;
   }
 
-  public function formatContactForDisplay($contactDetailsToDisplay) {
+  public static function formatContactForDisplay($contactDetailsToDisplay) {
     $contactDetails = CRM_Usermover_Form_UserMover::apiShortCut('Contact', 'getsingle', ['id' => $contactDetailsToDisplay['contact_id']]);
     $contactURL = CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$contactDetailsToDisplay['contact_id']}");
     $detailsToDisplay = [

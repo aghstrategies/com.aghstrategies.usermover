@@ -61,7 +61,7 @@ function civicrm_api3_user_mover_Get($params) {
       }
     }
   }
-  elseif (!empty($params['uf_id']) && !empty($userOptions[$params['uf_id']])) {
+  elseif (!empty($params['uf_id']) && (array_key_exists($params['user_id'], $userOptions) && !empty($userOptions[$params['uf_id']]))) {
     $usersToReturn[] = $userOptions[$params['uf_id']];
   }
   // Otherwise return everyone
@@ -90,19 +90,19 @@ function getAvailableUsers() {
   $config = CRM_Core_Config::singleton();
 
   // Wordpress
-  if ($config->userSystem->is_wordpress) {
-    $allUsers = get_users();
+  if ($config->userFramework == 'WordPress') {
+    $allUsers = get_users(['fields' => ['ID', 'user_login', 'user_email']]);
     foreach ($allUsers as $key => $userInfo) {
-      $userOptions[$userInfo->data->ID] = [
-        'id' => $userInfo->data->ID,
-        'uf_id' => $userInfo->data->ID,
-        'user_login' => $userInfo->data->user_login,
-        'uf_name' => $userInfo->data->user_email,
-        'label' => "{$userInfo->data->ID} ({$userInfo->data->user_login})",
-        'user_url' => $config->userFrameworkBaseURL . "wp-admin/user-edit.php?user_id=" . $userInfo->data->ID,
+      $userOptions[$userInfo->ID] = [
+        'id' => $userInfo->ID,
+        'uf_id' => $userInfo->ID,
+        'user_login' => $userInfo->user_login,
+        'uf_name' => $userInfo->user_email,
+        'label' => "{$userInfo->ID} ({$userInfo->user_login})",
+        'user_url' => $config->userFrameworkBaseURL . "wp-admin/user-edit.php?user_id=" . $userInfo->ID,
       ];
     }
-  }
+  }  
   // Joomla
   elseif (get_class($config->userSystem) == 'CRM_Utils_System_Joomla') {
     $id = 'id';
@@ -132,7 +132,7 @@ function getAvailableUsers() {
 
   }
   // Drupal or Backdrop
-  elseif ($config->userSystem->is_drupal) {
+  elseif ($config->userFramework == 'Drupal' || $config->userFramework == 'Drupal8') {
     $allUsers = db_query("SELECT uid, mail, name FROM {users} where mail != ''");
     foreach ($allUsers as $userInfo) {
       $userOptions[$userInfo->uid] = [
