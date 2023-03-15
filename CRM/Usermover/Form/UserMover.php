@@ -118,7 +118,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/usermover/confirm', $valuesToConfirm));
   }
 
-  public function linkToUserLand() {
+  public static function linkToUserLand() {
     $config = CRM_Core_Config::singleton();
     $url = NULL;
 
