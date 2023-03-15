@@ -9,7 +9,7 @@ use CRM_Usermover_ExtensionUtil as E;
  */
 class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
 
-  public function getUrlForSearch() {
+  public static function getUrlForSearch() {
     $url = NULL;
     $csid = self::apiShortCut('CustomSearch', 'getvalue', [
       'name' => "CRM_Usermover_Form_Search_Usermover",
@@ -88,7 +88,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     parent::buildQuickForm();
   }
 
-  public function apiShortCut($entity, $action, $params) {
+  public static function apiShortCut($entity, $action, $params) {
     try {
       $results = civicrm_api3($entity, $action, $params);
     }
