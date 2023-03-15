@@ -91,18 +91,18 @@ function getAvailableUsers() {
 
   // Wordpress
   if ($config->userSystem->is_wordpress) {
-    $allUsers = get_users();
+    $allUsers = get_users(['fields' => ['ID', 'user_login', 'user_email']]);
     foreach ($allUsers as $key => $userInfo) {
-      $userOptions[$userInfo->data->ID] = [
-        'id' => $userInfo->data->ID,
-        'uf_id' => $userInfo->data->ID,
-        'user_login' => $userInfo->data->user_login,
-        'uf_name' => $userInfo->data->user_email,
-        'label' => "{$userInfo->data->ID} ({$userInfo->data->user_login})",
-        'user_url' => $config->userFrameworkBaseURL . "wp-admin/user-edit.php?user_id=" . $userInfo->data->ID,
+      $userOptions[$userInfo->ID] = [
+        'id' => $userInfo->ID,
+        'uf_id' => $userInfo->ID,
+        'user_login' => $userInfo->user_login,
+        'uf_name' => $userInfo->user_email,
+        'label' => "{$userInfo->ID} ({$userInfo->user_login})",
+        'user_url' => $config->userFrameworkBaseURL . "wp-admin/user-edit.php?user_id=" . $userInfo->ID,
       ];
     }
-  }
+  }  
   // Joomla
   elseif (get_class($config->userSystem) == 'CRM_Utils_System_Joomla') {
     $id = 'id';
