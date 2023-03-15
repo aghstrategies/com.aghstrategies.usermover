@@ -61,7 +61,7 @@ function civicrm_api3_user_mover_Get($params) {
       }
     }
   }
-  elseif (!empty($params['uf_id']) && !empty($userOptions[$params['uf_id']])) {
+  elseif (!empty($params['uf_id']) && (array_key_exists($params['user_id'], $userOptions) && !empty($userOptions[$params['uf_id']]))) {
     $usersToReturn[] = $userOptions[$params['uf_id']];
   }
   // Otherwise return everyone
