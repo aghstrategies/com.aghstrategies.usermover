@@ -123,11 +123,11 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     $url = NULL;
 
     // WordPress
-    if ($config->userSystem->is_wordpress) {
+    if ($config->userFramework == 'WordPress') {
       $url = $config->userFrameworkBaseURL . "wp-admin/users.php";
     }
     // Drupal and Backdrop
-    elseif ($config->userSystem->is_drupal) {
+    elseif ($config->userFramework == 'Drupal' || $config->userFramework == 'Drupal8') {
       $url = $config->userFrameworkBaseURL . "admin/people";
     }
     // joomla

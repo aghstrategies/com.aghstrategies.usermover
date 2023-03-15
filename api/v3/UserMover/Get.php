@@ -90,7 +90,7 @@ function getAvailableUsers() {
   $config = CRM_Core_Config::singleton();
 
   // Wordpress
-  if ($config->userSystem->is_wordpress) {
+  if ($config->userFramework == 'WordPress') {
     $allUsers = get_users(['fields' => ['ID', 'user_login', 'user_email']]);
     foreach ($allUsers as $key => $userInfo) {
       $userOptions[$userInfo->ID] = [
@@ -132,7 +132,7 @@ function getAvailableUsers() {
 
   }
   // Drupal or Backdrop
-  elseif ($config->userSystem->is_drupal) {
+  elseif ($config->userFramework == 'Drupal' || $config->userFramework == 'Drupal8') {
     $allUsers = db_query("SELECT uid, mail, name FROM {users} where mail != ''");
     foreach ($allUsers as $userInfo) {
       $userOptions[$userInfo->uid] = [
