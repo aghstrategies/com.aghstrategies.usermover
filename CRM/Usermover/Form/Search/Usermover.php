@@ -189,9 +189,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
     ];
 
     foreach ($searchCriteria as $field => $fieldDetails) {
-      $field = CRM_Utils_Array::value($fieldDetails['sql'],
-        $this->_formValues
-      );
+      $field = $this->_formValues[$fieldDetails['sql']] ?? NULL;
       if ($field != NULL) {
         switch ($fieldDetails['sql']) {
           case 'user_id':
