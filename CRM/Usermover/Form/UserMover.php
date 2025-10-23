@@ -92,7 +92,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     try {
       $results = civicrm_api3($entity, $action, $params);
     }
-    catch (CiviCRM_API3_Exception $e) {
+    catch (CRM_Core_Exception $e) {
       $error = $e->getMessage();
       CRM_Core_Error::debug_log_message(ts('API Error %1', array(
         'domain' => 'com.aghstrategies.usermover',
