@@ -37,7 +37,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       $userLand = "<p>To create a new CMS user or edit an existing user go to the <a href='$userUrl'>CMS User Administration Page</a>.</p>";
     } else {
       CRM_Core_Session::setStatus(E::ts(
-        'No valid url to user land found. This extension only works for Drupal and Wordpress at this time.
+        'No valid url to user land found. This extension only works for Drupal, Backdrop and Wordpress at this time.
         Perhaps you are using a differnt CMS. Proceed with caution.'), E::ts('CMS Compatibility'), 'error');
     }
     $this->assign('userLand', $userLand);
@@ -127,7 +127,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
       $url = $config->userFrameworkBaseURL . "wp-admin/users.php";
     }
     // Drupal and Backdrop
-    elseif ($config->userFramework == 'Drupal' || $config->userFramework == 'Drupal8') {
+    elseif ($config->userFramework == 'Drupal' || $config->userFramework == 'Drupal8' || $config->userFramework == 'Backdrop') {
       $url = $config->userFrameworkBaseURL . "admin/people";
     }
     // joomla

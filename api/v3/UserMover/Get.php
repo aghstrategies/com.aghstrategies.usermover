@@ -132,7 +132,7 @@ function getAvailableUsers() {
 
   }
   // Drupal or Backdrop
-  elseif ($config->userFramework == 'Drupal' || $config->userFramework == 'Drupal8') {
+  elseif ($config->userFramework == 'Drupal' || $config->userFramework == 'Drupal8' || $config->userFramework == 'Backdrop') {
     $allUsers = db_query("SELECT uid, mail, name FROM {users} where mail != ''");
     foreach ($allUsers as $userInfo) {
       $userOptions[$userInfo->uid] = [
