@@ -9,12 +9,12 @@ function usermover_civicrm_links($op, $objectName, $objectId, &$links, &$mask, &
       $ufMatch = CRM_Usermover_Form_UserMover::apiShortCut('UFMatch', 'getsingle', ['contact_id' => $objectId]);
       if (!empty($ufMatch['uf_id'])) {
         $url = CRM_Utils_System::url('civicrm/usermover', "reset=1&ufid={$ufMatch['uf_id']}&cid={$objectId}&id={$ufMatch['id']}");
-        $links[] = array(
+        $links[] = [
           'name' => ts('Reassign CMS User'),
           'url' => $url,
           'title' => 'Reassign CMS User',
           'class' => 'no-popup',
-        );
+        ];
       }
     }
   }

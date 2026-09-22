@@ -37,18 +37,18 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     $consequences = self::getConsequencesOfThisAction($defaults, $recordToBeCreated);
 
     // Add url values to form so you can get them in postprocess
-    $this->addElement('hidden','contact_id', $defaults['contact_id'], array('id'=> 'contact_id'));
-    $this->addElement('hidden','uf_id', $defaults['uf_id'], array('id'=> 'uf_id'));
-    $this->addElement('hidden','uf_name', $recordToBeCreated['uf_name'], array('id'=> 'uf_name'));
-    $this->addElement('hidden','copy_email', $defaults['copy_email'], array('id'=> 'copy_email'));
+    $this->addElement('hidden','contact_id', $defaults['contact_id'], ['id'=> 'contact_id']);
+    $this->addElement('hidden','uf_id', $defaults['uf_id'], ['id'=> 'uf_id']);
+    $this->addElement('hidden','uf_name', $recordToBeCreated['uf_name'], ['id'=> 'uf_name']);
+    $this->addElement('hidden','copy_email', $defaults['copy_email'], ['id'=> 'copy_email']);
 
-    $this->addButtons(array(
-      array(
+    $this->addButtons([
+      [
         'type' => 'submit',
         'name' => E::ts('Submit'),
         'isDefault' => TRUE,
-      ),
-    ));
+      ],
+    ]);
 
     // export form elements to post process
     $this->assign('elementNames', $this->getRenderableElementNames());
@@ -86,18 +86,18 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
       }
 
       if ($result['is_error'] == 0) {
-        CRM_Core_Session::setStatus(E::ts('User id <a href="%4">%1</a> is now connected to <a href="%3">contact id %2</a>', array(
+        CRM_Core_Session::setStatus(E::ts('User id <a href="%4">%1</a> is now connected to <a href="%3">contact id %2</a>', [
           1 => $values['uf_id'],
           2 => $values['contact_id'],
           3 => CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$values['contact_id']}"),
           4 => CRM_Core_Config::singleton()->userSystem->getUserRecordUrl($values['contact_id']),
-        )),E::ts('User Reassigned'), 'success');
+        ]),E::ts('User Reassigned'), 'success');
       }
     } else {
-      CRM_Core_Session::setStatus(E::ts('CiviCRM <a href="%2">contact ID "%1"</a> no longer connected to a User', array(
+      CRM_Core_Session::setStatus(E::ts('CiviCRM <a href="%2">contact ID "%1"</a> no longer connected to a User', [
         1 => $values['contact_id'],
         2 => CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$values['contact_id']}"),
-      )), E::ts('User Connection Removed'), 'success');
+      ]), E::ts('User Connection Removed'), 'success');
     }
     $url = CRM_Usermover_Form_UserMover::getUrlForSearch();
     CRM_Utils_System::redirect($url);
@@ -113,7 +113,7 @@ class CRM_Usermover_Form_UserMover_Confirm extends CRM_Core_Form {
     // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
     // items don't have labels.  We'll identify renderable by filtering on
     // the 'label'.
-    $elementNames = array();
+    $elementNames = [];
     foreach ($this->_elements as $element) {
       /** @var HTML_QuickForm_Element $element */
       $label = $element->getLabel();

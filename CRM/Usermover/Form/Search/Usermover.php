@@ -22,10 +22,10 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
     // Add help text for users trying to create a new connection
     CRM_Core_Session::setStatus(E::ts(
       '<p>To connect a CMS user to a CiviCRM Contact visit the <a href="%1">Edit CMS User Connection</a> form.</p>
-       <p>To create a new CMS user or edit an existing user go to <a href="%2">CMS User Administration Page</a>.</p>', array(
+       <p>To create a new CMS user or edit an existing user go to <a href="%2">CMS User Administration Page</a>.</p>', [
       1 => CRM_Utils_System::url('civicrm/usermover'),
       2 => $userLand,
-    )), E::ts('New User Connections'), 'no-popup');
+    ]), E::ts('New User Connections'), 'no-popup');
 
     $form->add('text',
       'contact_name',
@@ -58,15 +58,15 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
     );
 
     // Optionally define default search values
-    $form->setDefaults(array(
+    $form->setDefaults([
       'contact_name' => '',
       'user_id' => '',
-    ));
+    ]);
     /**
      * if you are using the standard template, this array tells the template what elements
      * are part of the search criteria
      */
-    $form->assign('elements', array('contact_name', 'email', 'user_id', 'uf_name', 'user_name'));
+    $form->assign('elements', ['contact_name', 'email', 'user_id', 'uf_name', 'user_name']);
   }
 
   /**
@@ -91,13 +91,13 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
    */
   function &columns() {
     // return by reference
-    $columns = array(
+    $columns = [
       E::ts('Contact Id') => 'contact_id',
       E::ts('Name') => 'sort_name',
       E::ts('Email') => 'email',
       E::ts('User ID/User Name') => 'user_id',
       E::ts('User Unique Identifer in CiviCRM') => 'uf_name',
-    );
+    ];
     return $columns;
   }
 
@@ -153,14 +153,14 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
    * @return string, sql fragment with conditional expressions
    */
   function where($includeContactIDs = FALSE) {
-    $params = array();
+    $params = [];
     $where = "contact_a.id IS NOT NULL AND civicrm_uf_match.uf_id IS NOT NULL";
 
-    $clause = array();
+    $clause = [];
     $currentDomain = CRM_Usermover_Form_UserMover::apiShortCut('Domain', 'getsingle', []);
     if (!empty($currentDomain['id'])) {
       $clause[] = "civicrm_uf_match.domain_id = %1";
-      $params[1] = array($currentDomain['id'], 'String');
+      $params[1] = [$currentDomain['id'], 'String'];
     }
     $searchCriteria = [
       'name' => [
@@ -210,7 +210,7 @@ class CRM_Usermover_Form_Search_Usermover extends CRM_Contact_Form_Search_Custom
             if (strpos($field, '%') === FALSE) {
               $field = "%{$field}%";
             }
-            $params[$fieldDetails['param']] = array($field, 'String');
+            $params[$fieldDetails['param']] = [$field, 'String'];
             $clause[] = $fieldDetails['clause'];
             break;
         }
