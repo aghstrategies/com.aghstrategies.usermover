@@ -74,13 +74,13 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
 
     $this->add('checkbox', 'copy_email', ts('Copy the user email address to the CiviCRM contact if it is not already there.'));
 
-    $this->addButtons(array(
-      array(
+    $this->addButtons([
+      [
         'type' => 'submit',
         'name' => E::ts('Confirm'),
         'isDefault' => TRUE,
-      ),
-    ));
+      ],
+    ]);
     $this->setDefaults($defaults);
 
     // export form elements
@@ -94,10 +94,10 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     }
     catch (CRM_Core_Exception $e) {
       $error = $e->getMessage();
-      CRM_Core_Error::debug_log_message(ts('API Error %1', array(
+      CRM_Core_Error::debug_log_message(ts('API Error %1', [
         'domain' => 'com.aghstrategies.usermover',
         1 => $error,
-      )));
+      ]));
       return [
         'is_error' => 1,
         'error_message' => $error,
@@ -147,7 +147,7 @@ class CRM_Usermover_Form_UserMover extends CRM_Core_Form {
     // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
     // items don't have labels.  We'll identify renderable by filtering on
     // the 'label'.
-    $elementNames = array();
+    $elementNames = [];
     foreach ($this->_elements as $element) {
       /** @var HTML_QuickForm_Element $element */
       $label = $element->getLabel();
